@@ -37,7 +37,7 @@ jobs:
         run: |
           nvidia-smi
           echo
-          pytesXDt -p no:unraisableexception -We
+          pytest -p no:unraisableexception -We
 
 #      - if: matrix.platform != 'ubuntu-latest'
 #        run: pytest -p no:unraisableexception -We
