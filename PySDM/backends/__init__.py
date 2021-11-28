@@ -43,6 +43,7 @@ def _cuda_is_available():
 
 if _cuda_is_available() or cuda.is_available():
     from PySDM.backends.thrust_rtc import ThrustRTC
+    print("working with GPU!!")
 else:
     from .impl_thrust_rtc.test_helpers import flag
 
