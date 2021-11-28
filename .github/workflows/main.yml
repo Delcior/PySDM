@@ -35,7 +35,6 @@ jobs:
       - env:
           NUMBA_THREADING_LAYER: omp
         run: |
-          nvidia-smi
           echo
           pytest -p no:unraisableexception -We
 
