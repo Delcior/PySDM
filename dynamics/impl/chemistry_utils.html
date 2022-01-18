@@ -4,8 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
-<title>PySDM.physics.aqueous_chemistry.support API documentation</title>
-<meta name="description" content="" />
+<title>PySDM.dynamics.impl.chemistry_utils API documentation</title>
+<meta name="description" content="aqueous chemistry helper utils including specific gravity constants with
+values obtained using [chempy](https://pythonhosted.org/chempy/)&#39;s `Substance`" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -19,17 +20,23 @@
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>PySDM.physics.aqueous_chemistry.support</code></h1>
+<h1 class="title">Module <code>PySDM.dynamics.impl.chemistry_utils</code></h1>
 </header>
 <section id="section-intro">
+<p>aqueous chemistry helper utils including specific gravity constants with
+values obtained using <a href="https://pythonhosted.org/chempy/">chempy</a>'s <code>Substance</code></p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">from chempy import Substance
+<pre><code class="python">&#34;&#34;&#34;
+aqueous chemistry helper utils including specific gravity constants with
+ values obtained using [chempy](https://pythonhosted.org/chempy/)&#39;s `Substance`
+&#34;&#34;&#34;
+from chempy import Substance
 import numpy as np
 from PySDM.physics import si
-from PySDM.physics.constants import R_str, ROOM_TEMP, H_u, dT_u, M, Md, K_H2O
+from PySDM.physics.constants import K_H2O, M
 
 
 class EqConst:
@@ -47,7 +54,7 @@ class KinConst:
     def __init__(self, formulae, k, dT, T_0):
         self.formulae = formulae
         self.Ea = formulae.trivia.tdep2enthalpy(dT)
-        self.A = k * np.exp(self.Ea / (R_str * T_0))
+        self.A = k * np.exp(self.Ea / (self.formulae.constants.R_str * T_0))
 
     def at(self, T):
         return self.formulae.trivia.arrhenius(self.A, self.Ea, T)
@@ -55,27 +62,31 @@ class KinConst:
 
 class HenryConsts:
     def __init__(self, formulae):
+        const = formulae.constants
+        T0 = const.ROOM_TEMP
         self.HENRY_CONST = {
-            &#34;HNO3&#34;: EqConst(formulae, 2.1e5 * H_u, 8700 * dT_u, T_0=ROOM_TEMP),
-            &#34;H2O2&#34;: EqConst(formulae, 7.45e4 * H_u, 7300 * dT_u, T_0=ROOM_TEMP),
-            &#34;NH3&#34;:  EqConst(formulae, 62 * H_u, 4110 * dT_u, T_0=ROOM_TEMP),
-            &#34;SO2&#34;:  EqConst(formulae, 1.23 * H_u, 3150 * dT_u, T_0=ROOM_TEMP),
-            &#34;CO2&#34;:  EqConst(formulae, 3.4e-2 * H_u, 2440 * dT_u, T_0=ROOM_TEMP),
-            &#34;O3&#34;:   EqConst(formulae, 1.13e-2 * H_u, 2540 * dT_u, T_0=ROOM_TEMP),
+            &#34;HNO3&#34;: EqConst(formulae, 2.1e5 * const.H_u, 8700 * const.dT_u, T_0=T0),
+            &#34;H2O2&#34;: EqConst(formulae, 7.45e4 * const.H_u, 7300 * const.dT_u, T_0=T0),
+            &#34;NH3&#34;:  EqConst(formulae, 62 * const.H_u, 4110 * const.dT_u, T_0=T0),
+            &#34;SO2&#34;:  EqConst(formulae, 1.23 * const.H_u, 3150 * const.dT_u, T_0=T0),
+            &#34;CO2&#34;:  EqConst(formulae, 3.4e-2 * const.H_u, 2440 * const.dT_u, T_0=T0),
+            &#34;O3&#34;:   EqConst(formulae, 1.13e-2 * const.H_u, 2540 * const.dT_u, T_0=T0),
         }
 
 
 # Table 4 in Kreidenweis et al. 2003
 class EquilibriumConsts:
     def __init__(self, formulae):
+        const = formulae.constants
+        T0 = const.ROOM_TEMP
         self.EQUILIBRIUM_CONST = {  # Reaction Specific units, K
-            &#34;K_HNO3&#34;: EqConst(formulae, 15.4 * M, 8700 * dT_u, T_0=ROOM_TEMP),
-            &#34;K_SO2&#34;:  EqConst(formulae, 1.3e-2 * M, 1960 * dT_u, T_0=ROOM_TEMP),
-            &#34;K_NH3&#34;:  EqConst(formulae, 1.7e-5 * M, -450 * dT_u, T_0=ROOM_TEMP),
-            &#34;K_CO2&#34;:  EqConst(formulae, 4.3e-7 * M, -1000 * dT_u, T_0=ROOM_TEMP),
-            &#34;K_HSO3&#34;: EqConst(formulae, 6.6e-8 * M, 1500 * dT_u, T_0=ROOM_TEMP),
-            &#34;K_HCO3&#34;: EqConst(formulae, 4.68e-11 * M, -1760 * dT_u, T_0=ROOM_TEMP),
-            &#34;K_HSO4&#34;: EqConst(formulae, 1.2e-2 * M, 2720 * dT_u, T_0=ROOM_TEMP),
+            &#34;K_HNO3&#34;: EqConst(formulae, 15.4 * const.M, 8700 * const.dT_u, T_0=T0),
+            &#34;K_SO2&#34;:  EqConst(formulae, 1.3e-2 * const.M, 1960 * const.dT_u, T_0=T0),
+            &#34;K_NH3&#34;:  EqConst(formulae, 1.7e-5 * const.M, -450 * const.dT_u, T_0=T0),
+            &#34;K_CO2&#34;:  EqConst(formulae, 4.3e-7 * const.M, -1000 * const.dT_u, T_0=T0),
+            &#34;K_HSO3&#34;: EqConst(formulae, 6.6e-8 * const.M, 1500 * const.dT_u, T_0=T0),
+            &#34;K_HCO3&#34;: EqConst(formulae, 4.68e-11 * const.M, -1760 * const.dT_u, T_0=T0),
+            &#34;K_HSO4&#34;: EqConst(formulae, 1.2e-2 * const.M, 2720 * const.dT_u, T_0=T0),
         }
 
 
@@ -134,25 +145,34 @@ DISSOCIATION_FACTORS = {
 
 class KineticConsts:
     def __init__(self, formulae):
+        const = formulae.constants
+        T0 = const.ROOM_TEMP
         self.KINETIC_CONST = {
-            &#34;k0&#34;: KinConst(formulae, k=2.4e4 / si.s / M, dT=0 * dT_u, T_0=ROOM_TEMP),
-            &#34;k1&#34;: KinConst(formulae, k=3.5e5 / si.s / M, dT=-5530 * dT_u, T_0=ROOM_TEMP),
-            &#34;k2&#34;: KinConst(formulae, k=1.5e9 / si.s / M, dT=-5280 * dT_u, T_0=ROOM_TEMP),
+            &#34;k0&#34;: KinConst(formulae, k=2.4e4 / si.s / M, dT=0 * const.dT_u, T_0=T0),
+            &#34;k1&#34;: KinConst(formulae, k=3.5e5 / si.s / M, dT=-5530 * const.dT_u, T_0=T0),
+            &#34;k2&#34;: KinConst(formulae, k=1.5e9 / si.s / M, dT=-5280 * const.dT_u, T_0=T0),
             # Different unit due to a different pseudo-order of kinetics
-            &#34;k3&#34;: KinConst(formulae, k=7.45e7 / si.s / M / M, dT=-4430 * dT_u, T_0=ROOM_TEMP),
+            &#34;k3&#34;: KinConst(formulae, k=7.45e7 / si.s / M / M, dT=-4430 * const.dT_u, T_0=T0),
         }
 
 
 k4 = 13 / M
 
-SPECIFIC_GRAVITY = {
-    compound: Substance.from_formula(compound).mass * si.gram / si.mole / Md
-    for compound in GASEOUS_COMPOUNDS.values()
-}
 
-for compounds in AQUEOUS_COMPOUNDS.values():
-    for compound in compounds:
-        SPECIFIC_GRAVITY[compound] = Substance.from_formula(compound).mass * si.gram / si.mole / Md</code></pre>
+class SpecificGravities:
+    def __init__(self, constants):
+        self._values = {
+            compound: Substance.from_formula(compound).mass * si.gram / si.mole / constants.Md
+            for compound in GASEOUS_COMPOUNDS.values()
+        }
+
+        for compounds in AQUEOUS_COMPOUNDS.values():
+            for compound in compounds:
+                self._values[compound] = \
+                    Substance.from_formula(compound).mass * si.gram / si.mole / constants.Md
+
+    def __getitem__(self, item):
+        return self._values[item]</code></pre>
 </details>
 </section>
 <section>
@@ -164,7 +184,7 @@ for compounds in AQUEOUS_COMPOUNDS.values():
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
-<dt id="PySDM.physics.aqueous_chemistry.support.EqConst"><code class="flex name class">
+<dt id="PySDM.dynamics.impl.chemistry_utils.EqConst"><code class="flex name class">
 <span>class <span class="ident">EqConst</span></span>
 <span>(</span><span>formulae, constant_at_T0, dT, T_0)</span>
 </code></dt>
@@ -186,7 +206,7 @@ for compounds in AQUEOUS_COMPOUNDS.values():
 </details>
 <h3>Methods</h3>
 <dl>
-<dt id="PySDM.physics.aqueous_chemistry.support.EqConst.at"><code class="name flex">
+<dt id="PySDM.dynamics.impl.chemistry_utils.EqConst.at"><code class="name flex">
 <span>def <span class="ident">at</span></span>(<span>self, T)</span>
 </code></dt>
 <dd>
@@ -201,7 +221,7 @@ for compounds in AQUEOUS_COMPOUNDS.values():
 </dd>
 </dl>
 </dd>
-<dt id="PySDM.physics.aqueous_chemistry.support.EquilibriumConsts"><code class="flex name class">
+<dt id="PySDM.dynamics.impl.chemistry_utils.EquilibriumConsts"><code class="flex name class">
 <span>class <span class="ident">EquilibriumConsts</span></span>
 <span>(</span><span>formulae)</span>
 </code></dt>
@@ -213,18 +233,20 @@ for compounds in AQUEOUS_COMPOUNDS.values():
 </summary>
 <pre><code class="python">class EquilibriumConsts:
     def __init__(self, formulae):
+        const = formulae.constants
+        T0 = const.ROOM_TEMP
         self.EQUILIBRIUM_CONST = {  # Reaction Specific units, K
-            &#34;K_HNO3&#34;: EqConst(formulae, 15.4 * M, 8700 * dT_u, T_0=ROOM_TEMP),
-            &#34;K_SO2&#34;:  EqConst(formulae, 1.3e-2 * M, 1960 * dT_u, T_0=ROOM_TEMP),
-            &#34;K_NH3&#34;:  EqConst(formulae, 1.7e-5 * M, -450 * dT_u, T_0=ROOM_TEMP),
-            &#34;K_CO2&#34;:  EqConst(formulae, 4.3e-7 * M, -1000 * dT_u, T_0=ROOM_TEMP),
-            &#34;K_HSO3&#34;: EqConst(formulae, 6.6e-8 * M, 1500 * dT_u, T_0=ROOM_TEMP),
-            &#34;K_HCO3&#34;: EqConst(formulae, 4.68e-11 * M, -1760 * dT_u, T_0=ROOM_TEMP),
-            &#34;K_HSO4&#34;: EqConst(formulae, 1.2e-2 * M, 2720 * dT_u, T_0=ROOM_TEMP),
+            &#34;K_HNO3&#34;: EqConst(formulae, 15.4 * const.M, 8700 * const.dT_u, T_0=T0),
+            &#34;K_SO2&#34;:  EqConst(formulae, 1.3e-2 * const.M, 1960 * const.dT_u, T_0=T0),
+            &#34;K_NH3&#34;:  EqConst(formulae, 1.7e-5 * const.M, -450 * const.dT_u, T_0=T0),
+            &#34;K_CO2&#34;:  EqConst(formulae, 4.3e-7 * const.M, -1000 * const.dT_u, T_0=T0),
+            &#34;K_HSO3&#34;: EqConst(formulae, 6.6e-8 * const.M, 1500 * const.dT_u, T_0=T0),
+            &#34;K_HCO3&#34;: EqConst(formulae, 4.68e-11 * const.M, -1760 * const.dT_u, T_0=T0),
+            &#34;K_HSO4&#34;: EqConst(formulae, 1.2e-2 * const.M, 2720 * const.dT_u, T_0=T0),
         }</code></pre>
 </details>
 </dd>
-<dt id="PySDM.physics.aqueous_chemistry.support.HenryConsts"><code class="flex name class">
+<dt id="PySDM.dynamics.impl.chemistry_utils.HenryConsts"><code class="flex name class">
 <span>class <span class="ident">HenryConsts</span></span>
 <span>(</span><span>formulae)</span>
 </code></dt>
@@ -236,17 +258,19 @@ for compounds in AQUEOUS_COMPOUNDS.values():
 </summary>
 <pre><code class="python">class HenryConsts:
     def __init__(self, formulae):
+        const = formulae.constants
+        T0 = const.ROOM_TEMP
         self.HENRY_CONST = {
-            &#34;HNO3&#34;: EqConst(formulae, 2.1e5 * H_u, 8700 * dT_u, T_0=ROOM_TEMP),
-            &#34;H2O2&#34;: EqConst(formulae, 7.45e4 * H_u, 7300 * dT_u, T_0=ROOM_TEMP),
-            &#34;NH3&#34;:  EqConst(formulae, 62 * H_u, 4110 * dT_u, T_0=ROOM_TEMP),
-            &#34;SO2&#34;:  EqConst(formulae, 1.23 * H_u, 3150 * dT_u, T_0=ROOM_TEMP),
-            &#34;CO2&#34;:  EqConst(formulae, 3.4e-2 * H_u, 2440 * dT_u, T_0=ROOM_TEMP),
-            &#34;O3&#34;:   EqConst(formulae, 1.13e-2 * H_u, 2540 * dT_u, T_0=ROOM_TEMP),
+            &#34;HNO3&#34;: EqConst(formulae, 2.1e5 * const.H_u, 8700 * const.dT_u, T_0=T0),
+            &#34;H2O2&#34;: EqConst(formulae, 7.45e4 * const.H_u, 7300 * const.dT_u, T_0=T0),
+            &#34;NH3&#34;:  EqConst(formulae, 62 * const.H_u, 4110 * const.dT_u, T_0=T0),
+            &#34;SO2&#34;:  EqConst(formulae, 1.23 * const.H_u, 3150 * const.dT_u, T_0=T0),
+            &#34;CO2&#34;:  EqConst(formulae, 3.4e-2 * const.H_u, 2440 * const.dT_u, T_0=T0),
+            &#34;O3&#34;:   EqConst(formulae, 1.13e-2 * const.H_u, 2540 * const.dT_u, T_0=T0),
         }</code></pre>
 </details>
 </dd>
-<dt id="PySDM.physics.aqueous_chemistry.support.KinConst"><code class="flex name class">
+<dt id="PySDM.dynamics.impl.chemistry_utils.KinConst"><code class="flex name class">
 <span>class <span class="ident">KinConst</span></span>
 <span>(</span><span>formulae, k, dT, T_0)</span>
 </code></dt>
@@ -260,14 +284,14 @@ for compounds in AQUEOUS_COMPOUNDS.values():
     def __init__(self, formulae, k, dT, T_0):
         self.formulae = formulae
         self.Ea = formulae.trivia.tdep2enthalpy(dT)
-        self.A = k * np.exp(self.Ea / (R_str * T_0))
+        self.A = k * np.exp(self.Ea / (self.formulae.constants.R_str * T_0))
 
     def at(self, T):
         return self.formulae.trivia.arrhenius(self.A, self.Ea, T)</code></pre>
 </details>
 <h3>Methods</h3>
 <dl>
-<dt id="PySDM.physics.aqueous_chemistry.support.KinConst.at"><code class="name flex">
+<dt id="PySDM.dynamics.impl.chemistry_utils.KinConst.at"><code class="name flex">
 <span>def <span class="ident">at</span></span>(<span>self, T)</span>
 </code></dt>
 <dd>
@@ -282,7 +306,7 @@ for compounds in AQUEOUS_COMPOUNDS.values():
 </dd>
 </dl>
 </dd>
-<dt id="PySDM.physics.aqueous_chemistry.support.KineticConsts"><code class="flex name class">
+<dt id="PySDM.dynamics.impl.chemistry_utils.KineticConsts"><code class="flex name class">
 <span>class <span class="ident">KineticConsts</span></span>
 <span>(</span><span>formulae)</span>
 </code></dt>
@@ -294,13 +318,41 @@ for compounds in AQUEOUS_COMPOUNDS.values():
 </summary>
 <pre><code class="python">class KineticConsts:
     def __init__(self, formulae):
+        const = formulae.constants
+        T0 = const.ROOM_TEMP
         self.KINETIC_CONST = {
-            &#34;k0&#34;: KinConst(formulae, k=2.4e4 / si.s / M, dT=0 * dT_u, T_0=ROOM_TEMP),
-            &#34;k1&#34;: KinConst(formulae, k=3.5e5 / si.s / M, dT=-5530 * dT_u, T_0=ROOM_TEMP),
-            &#34;k2&#34;: KinConst(formulae, k=1.5e9 / si.s / M, dT=-5280 * dT_u, T_0=ROOM_TEMP),
+            &#34;k0&#34;: KinConst(formulae, k=2.4e4 / si.s / M, dT=0 * const.dT_u, T_0=T0),
+            &#34;k1&#34;: KinConst(formulae, k=3.5e5 / si.s / M, dT=-5530 * const.dT_u, T_0=T0),
+            &#34;k2&#34;: KinConst(formulae, k=1.5e9 / si.s / M, dT=-5280 * const.dT_u, T_0=T0),
             # Different unit due to a different pseudo-order of kinetics
-            &#34;k3&#34;: KinConst(formulae, k=7.45e7 / si.s / M / M, dT=-4430 * dT_u, T_0=ROOM_TEMP),
+            &#34;k3&#34;: KinConst(formulae, k=7.45e7 / si.s / M / M, dT=-4430 * const.dT_u, T_0=T0),
         }</code></pre>
+</details>
+</dd>
+<dt id="PySDM.dynamics.impl.chemistry_utils.SpecificGravities"><code class="flex name class">
+<span>class <span class="ident">SpecificGravities</span></span>
+<span>(</span><span>constants)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class SpecificGravities:
+    def __init__(self, constants):
+        self._values = {
+            compound: Substance.from_formula(compound).mass * si.gram / si.mole / constants.Md
+            for compound in GASEOUS_COMPOUNDS.values()
+        }
+
+        for compounds in AQUEOUS_COMPOUNDS.values():
+            for compound in compounds:
+                self._values[compound] = \
+                    Substance.from_formula(compound).mass * si.gram / si.mole / constants.Md
+
+    def __getitem__(self, item):
+        return self._values[item]</code></pre>
 </details>
 </dd>
 </dl>
@@ -314,31 +366,34 @@ for compounds in AQUEOUS_COMPOUNDS.values():
 <ul id="index">
 <li><h3>Super-module</h3>
 <ul>
-<li><code><a title="PySDM.physics.aqueous_chemistry" href="index.html">PySDM.physics.aqueous_chemistry</a></code></li>
+<li><code><a title="PySDM.dynamics.impl" href="index.html">PySDM.dynamics.impl</a></code></li>
 </ul>
 </li>
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
 <li>
-<h4><code><a title="PySDM.physics.aqueous_chemistry.support.EqConst" href="#PySDM.physics.aqueous_chemistry.support.EqConst">EqConst</a></code></h4>
+<h4><code><a title="PySDM.dynamics.impl.chemistry_utils.EqConst" href="#PySDM.dynamics.impl.chemistry_utils.EqConst">EqConst</a></code></h4>
 <ul class="">
-<li><code><a title="PySDM.physics.aqueous_chemistry.support.EqConst.at" href="#PySDM.physics.aqueous_chemistry.support.EqConst.at">at</a></code></li>
+<li><code><a title="PySDM.dynamics.impl.chemistry_utils.EqConst.at" href="#PySDM.dynamics.impl.chemistry_utils.EqConst.at">at</a></code></li>
 </ul>
 </li>
 <li>
-<h4><code><a title="PySDM.physics.aqueous_chemistry.support.EquilibriumConsts" href="#PySDM.physics.aqueous_chemistry.support.EquilibriumConsts">EquilibriumConsts</a></code></h4>
+<h4><code><a title="PySDM.dynamics.impl.chemistry_utils.EquilibriumConsts" href="#PySDM.dynamics.impl.chemistry_utils.EquilibriumConsts">EquilibriumConsts</a></code></h4>
 </li>
 <li>
-<h4><code><a title="PySDM.physics.aqueous_chemistry.support.HenryConsts" href="#PySDM.physics.aqueous_chemistry.support.HenryConsts">HenryConsts</a></code></h4>
+<h4><code><a title="PySDM.dynamics.impl.chemistry_utils.HenryConsts" href="#PySDM.dynamics.impl.chemistry_utils.HenryConsts">HenryConsts</a></code></h4>
 </li>
 <li>
-<h4><code><a title="PySDM.physics.aqueous_chemistry.support.KinConst" href="#PySDM.physics.aqueous_chemistry.support.KinConst">KinConst</a></code></h4>
+<h4><code><a title="PySDM.dynamics.impl.chemistry_utils.KinConst" href="#PySDM.dynamics.impl.chemistry_utils.KinConst">KinConst</a></code></h4>
 <ul class="">
-<li><code><a title="PySDM.physics.aqueous_chemistry.support.KinConst.at" href="#PySDM.physics.aqueous_chemistry.support.KinConst.at">at</a></code></li>
+<li><code><a title="PySDM.dynamics.impl.chemistry_utils.KinConst.at" href="#PySDM.dynamics.impl.chemistry_utils.KinConst.at">at</a></code></li>
 </ul>
 </li>
 <li>
-<h4><code><a title="PySDM.physics.aqueous_chemistry.support.KineticConsts" href="#PySDM.physics.aqueous_chemistry.support.KineticConsts">KineticConsts</a></code></h4>
+<h4><code><a title="PySDM.dynamics.impl.chemistry_utils.KineticConsts" href="#PySDM.dynamics.impl.chemistry_utils.KineticConsts">KineticConsts</a></code></h4>
+</li>
+<li>
+<h4><code><a title="PySDM.dynamics.impl.chemistry_utils.SpecificGravities" href="#PySDM.dynamics.impl.chemistry_utils.SpecificGravities">SpecificGravities</a></code></h4>
 </li>
 </ul>
 </li>

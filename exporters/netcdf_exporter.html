@@ -5,7 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
 <title>PySDM.exporters.netcdf_exporter API documentation</title>
-<meta name="description" content="" />
+<meta name="description" content="netCDF exporter implemented using
+[SciPy.io.netcdf_file](https://docs.scipy.org/doc/scipy/reference/tutorial/io.html#netcdf)" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -22,13 +23,21 @@
 <h1 class="title">Module <code>PySDM.exporters.netcdf_exporter</code></h1>
 </header>
 <section id="section-intro">
+<p>netCDF exporter implemented using
+<a href="https://docs.scipy.org/doc/scipy/reference/tutorial/io.html#netcdf">SciPy.io.netcdf_file</a></p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">import numpy as np
+<pre><code class="python">&#34;&#34;&#34; netCDF exporter implemented using
+ [SciPy.io.netcdf_file](https://docs.scipy.org/doc/scipy/reference/tutorial/io.html#netcdf)
+&#34;&#34;&#34;
+import numpy as np
 from scipy.io.netcdf import netcdf_file
+from PySDM.products.impl.spectrum_moment_product import SpectrumMomentProduct
 
+
+DIM_SUFFIX = &#39;_bin_left_edges&#39;
 
 class NetCDFExporter:
     def __init__(self, storage, settings, simulator, filename):
@@ -45,12 +54,16 @@ class NetCDFExporter:
 
     def _create_dimensions(self, ncdf):
         ncdf.createDimension(&#34;T&#34;, len(self.settings.output_steps))
+
         for index, label in enumerate(self.XZ):
             ncdf.createDimension(label, self.settings.grid[index])
-        ncdf.createDimension(
-            &#34;ParticleVolume&#34;,
-            len(self.settings.formulae.trivia.volume(self.settings.r_bins_edges)) - 1
-        )
+
+        for name, instance in self.simulator.products.items():
+            if isinstance(instance, SpectrumMomentProduct):
+                ncdf.createDimension(
+                    f&#34;{name}{DIM_SUFFIX}&#34;,
+                    len(instance.attr_bins_edges) - 1
+                )
 
     def _create_variables(self, ncdf):
         self.vars = {}
@@ -63,7 +76,12 @@ class NetCDFExporter:
                                    * (1 / 2 + np.arange(self.settings.grid[index])))
             self.vars[label].units = &#34;metres&#34;
 
-        # TODO #340 ParticleVolume var
+        for name, instance in self.simulator.products.items():
+            if isinstance(instance, SpectrumMomentProduct):
+                label = f&#34;{name}{DIM_SUFFIX}&#34;
+                self.vars[label] = ncdf.createVariable(label, &#39;f&#39;, (label,))
+                self.vars[label][:] = instance.attr_bins_edges.to_ndarray()[:-1]
+                self.vars[label].units = instance.attr_unit
 
         for name, instance in self.simulator.products.items():
             if name in self.vars:
@@ -71,7 +89,7 @@ class NetCDFExporter:
 
             n_dimensions = len(instance.shape)
             if n_dimensions == 3:
-                dimensions = (&#34;T&#34;, &#34;X&#34;, &#34;Z&#34;, &#34;ParticleVolume&#34;)
+                dimensions = (&#34;T&#34;, &#34;X&#34;, &#34;Z&#34;, f&#34;{name}{DIM_SUFFIX}&#34;)
             elif n_dimensions == 2:
                 dimensions = (&#34;T&#34;, &#34;X&#34;, &#34;Z&#34;)
             elif n_dimensions == 0:
@@ -145,12 +163,16 @@ class NetCDFExporter:
 
     def _create_dimensions(self, ncdf):
         ncdf.createDimension(&#34;T&#34;, len(self.settings.output_steps))
+
         for index, label in enumerate(self.XZ):
             ncdf.createDimension(label, self.settings.grid[index])
-        ncdf.createDimension(
-            &#34;ParticleVolume&#34;,
-            len(self.settings.formulae.trivia.volume(self.settings.r_bins_edges)) - 1
-        )
+
+        for name, instance in self.simulator.products.items():
+            if isinstance(instance, SpectrumMomentProduct):
+                ncdf.createDimension(
+                    f&#34;{name}{DIM_SUFFIX}&#34;,
+                    len(instance.attr_bins_edges) - 1
+                )
 
     def _create_variables(self, ncdf):
         self.vars = {}
@@ -163,7 +185,12 @@ class NetCDFExporter:
                                    * (1 / 2 + np.arange(self.settings.grid[index])))
             self.vars[label].units = &#34;metres&#34;
 
-        # TODO #340 ParticleVolume var
+        for name, instance in self.simulator.products.items():
+            if isinstance(instance, SpectrumMomentProduct):
+                label = f&#34;{name}{DIM_SUFFIX}&#34;
+                self.vars[label] = ncdf.createVariable(label, &#39;f&#39;, (label,))
+                self.vars[label][:] = instance.attr_bins_edges.to_ndarray()[:-1]
+                self.vars[label].units = instance.attr_unit
 
         for name, instance in self.simulator.products.items():
             if name in self.vars:
@@ -171,7 +198,7 @@ class NetCDFExporter:
 
             n_dimensions = len(instance.shape)
             if n_dimensions == 3:
-                dimensions = (&#34;T&#34;, &#34;X&#34;, &#34;Z&#34;, &#34;ParticleVolume&#34;)
+                dimensions = (&#34;T&#34;, &#34;X&#34;, &#34;Z&#34;, f&#34;{name}{DIM_SUFFIX}&#34;)
             elif n_dimensions == 2:
                 dimensions = (&#34;T&#34;, &#34;X&#34;, &#34;Z&#34;)
             elif n_dimensions == 0:

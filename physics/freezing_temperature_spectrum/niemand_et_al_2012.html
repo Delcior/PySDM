@@ -5,7 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
 <title>PySDM.physics.freezing_temperature_spectrum.niemand_et_al_2012 API documentation</title>
-<meta name="description" content="" />
+<meta name="description" content="freezing temperature spectrum based on
+[Niemand et al. 2012](https://doi.org/10.1175/JAS-D-11-0249.1) INAS density parameterization" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -22,39 +23,53 @@
 <h1 class="title">Module <code>PySDM.physics.freezing_temperature_spectrum.niemand_et_al_2012</code></h1>
 </header>
 <section id="section-intro">
+<p>freezing temperature spectrum based on
+<a href="https://doi.org/10.1175/JAS-D-11-0249.1">Niemand et al. 2012</a> INAS density parameterization</p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">import numpy as np
-from PySDM.physics import constants as const
-
-a = np.nan
-b = np.nan
+<pre><code class="python">&#34;&#34;&#34;
+freezing temperature spectrum based on
+ [Niemand et al. 2012](https://doi.org/10.1175/JAS-D-11-0249.1) INAS density parameterization
+&#34;&#34;&#34;
+import numpy as np
 
 
 class Niemand_et_al_2012:
     def __str__(self):
         return &#39;Niemand et al. 2012&#39;
 
-    def __init__(self):
-        assert np.isfinite(a)
-        assert np.isfinite(b)
+    def __init__(self, const):
+        assert np.isfinite(const.NIEMAND_A)
+        assert np.isfinite(const.NIEMAND_B)
 
     @staticmethod
-    def pdf(T, A_insol):
-        ns_T = np.exp(a * (T - const.T0) + b)
-        return -A_insol * a * ns_T * np.exp(-A_insol * ns_T)
+    def ns(const, T):
+        return np.exp(const.NIEMAND_A * (T - const.T0) + const.NIEMAND_B)
 
     @staticmethod
-    def cdf(T, A_insol):
-        ns_T = np.exp(a * (T - const.T0) + b)
-        return 1 - np.exp(-A_insol * ns_T) - np.exp(-A_insol*np.exp(-a * const.T0 + b))
+    def pdf(const, T, A_insol):
+        ns_T = np.exp(const.NIEMAND_A * (T - const.T0) + const.NIEMAND_B)
+        return -A_insol * const.NIEMAND_A * ns_T * np.exp(-A_insol * ns_T)
 
     @staticmethod
-    def invcdf(cdf, A_insol):
-        tmp = np.log((np.log(1 - cdf) + np.exp(-A_insol*np.exp(-a * const.T0 + b))) / -A_insol)
-        return const.T0 + (tmp - b) / a</code></pre>
+    def cdf(const, T, A_insol):
+        ns_T = np.exp(const.NIEMAND_A * (T - const.T0) + const.NIEMAND_B)
+        return 1 - np.exp(-A_insol * ns_T) - np.exp(
+            -A_insol*np.exp(-const.NIEMAND_A * const.T0 + const.NIEMAND_B)
+        )
+
+    @staticmethod
+    def invcdf(const, cdf, A_insol):
+        tmp = np.log(
+            (
+                np.log(1 - cdf)
+                +
+                np.exp(-A_insol*np.exp(-const.NIEMAND_A * const.T0 + const.NIEMAND_B))
+            ) / -A_insol
+        )
+        return const.T0 + (tmp - const.NIEMAND_B) / const.NIEMAND_A</code></pre>
 </details>
 </section>
 <section>
@@ -68,6 +83,7 @@ class Niemand_et_al_2012:
 <dl>
 <dt id="PySDM.physics.freezing_temperature_spectrum.niemand_et_al_2012.Niemand_et_al_2012"><code class="flex name class">
 <span>class <span class="ident">Niemand_et_al_2012</span></span>
+<span>(</span><span>const)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -79,29 +95,41 @@ class Niemand_et_al_2012:
     def __str__(self):
         return &#39;Niemand et al. 2012&#39;
 
-    def __init__(self):
-        assert np.isfinite(a)
-        assert np.isfinite(b)
+    def __init__(self, const):
+        assert np.isfinite(const.NIEMAND_A)
+        assert np.isfinite(const.NIEMAND_B)
 
     @staticmethod
-    def pdf(T, A_insol):
-        ns_T = np.exp(a * (T - const.T0) + b)
-        return -A_insol * a * ns_T * np.exp(-A_insol * ns_T)
+    def ns(const, T):
+        return np.exp(const.NIEMAND_A * (T - const.T0) + const.NIEMAND_B)
 
     @staticmethod
-    def cdf(T, A_insol):
-        ns_T = np.exp(a * (T - const.T0) + b)
-        return 1 - np.exp(-A_insol * ns_T) - np.exp(-A_insol*np.exp(-a * const.T0 + b))
+    def pdf(const, T, A_insol):
+        ns_T = np.exp(const.NIEMAND_A * (T - const.T0) + const.NIEMAND_B)
+        return -A_insol * const.NIEMAND_A * ns_T * np.exp(-A_insol * ns_T)
 
     @staticmethod
-    def invcdf(cdf, A_insol):
-        tmp = np.log((np.log(1 - cdf) + np.exp(-A_insol*np.exp(-a * const.T0 + b))) / -A_insol)
-        return const.T0 + (tmp - b) / a</code></pre>
+    def cdf(const, T, A_insol):
+        ns_T = np.exp(const.NIEMAND_A * (T - const.T0) + const.NIEMAND_B)
+        return 1 - np.exp(-A_insol * ns_T) - np.exp(
+            -A_insol*np.exp(-const.NIEMAND_A * const.T0 + const.NIEMAND_B)
+        )
+
+    @staticmethod
+    def invcdf(const, cdf, A_insol):
+        tmp = np.log(
+            (
+                np.log(1 - cdf)
+                +
+                np.exp(-A_insol*np.exp(-const.NIEMAND_A * const.T0 + const.NIEMAND_B))
+            ) / -A_insol
+        )
+        return const.T0 + (tmp - const.NIEMAND_B) / const.NIEMAND_A</code></pre>
 </details>
 <h3>Static methods</h3>
 <dl>
 <dt id="PySDM.physics.freezing_temperature_spectrum.niemand_et_al_2012.Niemand_et_al_2012.cdf"><code class="name flex">
-<span>def <span class="ident">cdf</span></span>(<span>T, A_insol)</span>
+<span>def <span class="ident">cdf</span></span>(<span>const, T, A_insol)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -110,13 +138,15 @@ class Niemand_et_al_2012:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-def cdf(T, A_insol):
-    ns_T = np.exp(a * (T - const.T0) + b)
-    return 1 - np.exp(-A_insol * ns_T) - np.exp(-A_insol*np.exp(-a * const.T0 + b))</code></pre>
+def cdf(const, T, A_insol):
+    ns_T = np.exp(const.NIEMAND_A * (T - const.T0) + const.NIEMAND_B)
+    return 1 - np.exp(-A_insol * ns_T) - np.exp(
+        -A_insol*np.exp(-const.NIEMAND_A * const.T0 + const.NIEMAND_B)
+    )</code></pre>
 </details>
 </dd>
 <dt id="PySDM.physics.freezing_temperature_spectrum.niemand_et_al_2012.Niemand_et_al_2012.invcdf"><code class="name flex">
-<span>def <span class="ident">invcdf</span></span>(<span>cdf, A_insol)</span>
+<span>def <span class="ident">invcdf</span></span>(<span>const, cdf, A_insol)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -125,13 +155,33 @@ def cdf(T, A_insol):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-def invcdf(cdf, A_insol):
-    tmp = np.log((np.log(1 - cdf) + np.exp(-A_insol*np.exp(-a * const.T0 + b))) / -A_insol)
-    return const.T0 + (tmp - b) / a</code></pre>
+def invcdf(const, cdf, A_insol):
+    tmp = np.log(
+        (
+            np.log(1 - cdf)
+            +
+            np.exp(-A_insol*np.exp(-const.NIEMAND_A * const.T0 + const.NIEMAND_B))
+        ) / -A_insol
+    )
+    return const.T0 + (tmp - const.NIEMAND_B) / const.NIEMAND_A</code></pre>
+</details>
+</dd>
+<dt id="PySDM.physics.freezing_temperature_spectrum.niemand_et_al_2012.Niemand_et_al_2012.ns"><code class="name flex">
+<span>def <span class="ident">ns</span></span>(<span>const, T)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def ns(const, T):
+    return np.exp(const.NIEMAND_A * (T - const.T0) + const.NIEMAND_B)</code></pre>
 </details>
 </dd>
 <dt id="PySDM.physics.freezing_temperature_spectrum.niemand_et_al_2012.Niemand_et_al_2012.pdf"><code class="name flex">
-<span>def <span class="ident">pdf</span></span>(<span>T, A_insol)</span>
+<span>def <span class="ident">pdf</span></span>(<span>const, T, A_insol)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -140,9 +190,9 @@ def invcdf(cdf, A_insol):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-def pdf(T, A_insol):
-    ns_T = np.exp(a * (T - const.T0) + b)
-    return -A_insol * a * ns_T * np.exp(-A_insol * ns_T)</code></pre>
+def pdf(const, T, A_insol):
+    ns_T = np.exp(const.NIEMAND_A * (T - const.T0) + const.NIEMAND_B)
+    return -A_insol * const.NIEMAND_A * ns_T * np.exp(-A_insol * ns_T)</code></pre>
 </details>
 </dd>
 </dl>
@@ -168,6 +218,7 @@ def pdf(T, A_insol):
 <ul class="">
 <li><code><a title="PySDM.physics.freezing_temperature_spectrum.niemand_et_al_2012.Niemand_et_al_2012.cdf" href="#PySDM.physics.freezing_temperature_spectrum.niemand_et_al_2012.Niemand_et_al_2012.cdf">cdf</a></code></li>
 <li><code><a title="PySDM.physics.freezing_temperature_spectrum.niemand_et_al_2012.Niemand_et_al_2012.invcdf" href="#PySDM.physics.freezing_temperature_spectrum.niemand_et_al_2012.Niemand_et_al_2012.invcdf">invcdf</a></code></li>
+<li><code><a title="PySDM.physics.freezing_temperature_spectrum.niemand_et_al_2012.Niemand_et_al_2012.ns" href="#PySDM.physics.freezing_temperature_spectrum.niemand_et_al_2012.Niemand_et_al_2012.ns">ns</a></code></li>
 <li><code><a title="PySDM.physics.freezing_temperature_spectrum.niemand_et_al_2012.Niemand_et_al_2012.pdf" href="#PySDM.physics.freezing_temperature_spectrum.niemand_et_al_2012.Niemand_et_al_2012.pdf">pdf</a></code></li>
 </ul>
 </li>

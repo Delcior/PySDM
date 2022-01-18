@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
 <title>PySDM.products.impl.product API documentation</title>
-<meta name="description" content="" />
+<meta name="description" content="logic around the `PySDM.products.impl.product.Product` - parent class for all products" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -22,17 +22,20 @@
 <h1 class="title">Module <code>PySDM.products.impl.product</code></h1>
 </header>
 <section id="section-intro">
+<p>logic around the <code><a title="PySDM.products.impl.product.Product" href="#PySDM.products.impl.product.Product">Product</a></code> - parent class for all products</p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">from abc import abstractmethod
+<pre><code class="python">&#34;&#34;&#34;
+logic around the `PySDM.products.impl.product.Product` - parent class for all products
+&#34;&#34;&#34;
+from abc import abstractmethod
 from typing import Optional
 import re
 import inspect
-import numpy as np
 import pint
-from PySDM.physics import constants as const
+from PySDM.physics.constants import PPB, PPM, PPT
 
 _UNIT_REGISTRY = pint.UnitRegistry()
 _CAMEL_CASE_PATTERN = re.compile(r&#39;[A-Z]?[a-z]+|[A-Z]+(?![^A-Z])&#39;)
@@ -42,8 +45,8 @@ class Product:
     def __init__(self, *, unit: str, name: Optional[str] = None):
         self.name = name or self._camel_case_to_words(self.__class__.__name__)
 
-        self._unit = self.__parse_unit(unit)
-        self._base_unit = self._unit.to_base_units().magnitude
+        self._unit = self._parse_unit(unit)
+        self.unit_magnitude_in_base_units = self._unit.to_base_units().magnitude
         self.__check_unit()
 
         self.shape = None
@@ -55,22 +58,24 @@ class Product:
         self.particulator = builder.particulator
         self.formulae = self.particulator.formulae
         self.shape = self.particulator.mesh.grid
-        self.buffer = np.empty(self.particulator.mesh.grid)
+
+    def set_buffer(self, buffer):
+        self.buffer = buffer
 
     def _download_to_buffer(self, storage):
         storage.download(self.buffer.ravel())
 
     @staticmethod
-    def __parse_unit(unit: str):
+    def _parse_unit(unit: str):
         if unit in (&#39;%&#39;, &#39;percent&#39;):
             return .01 * _UNIT_REGISTRY.dimensionless
         if unit in (&#39;PPB&#39;, &#39;ppb&#39;):
-            return const.PPB * _UNIT_REGISTRY.dimensionless
+            return PPB * _UNIT_REGISTRY.dimensionless
         if unit in (&#39;PPM&#39;, &#39;ppm&#39;):
-            return const.PPM * _UNIT_REGISTRY.dimensionless
+            return PPM * _UNIT_REGISTRY.dimensionless
         if unit in (&#39;PPT&#39;, &#39;ppt&#39;):
-            return const.PPT * _UNIT_REGISTRY.dimensionless
-        return _UNIT_REGISTRY[unit]
+            return PPT * _UNIT_REGISTRY.dimensionless
+        return _UNIT_REGISTRY.parse_expression(unit)
 
     @staticmethod
     def _camel_case_to_words(string: str):
@@ -90,7 +95,7 @@ class Product:
             raise AssertionError(f&#34;unit parameter of {type(self).__name__}.__init__&#34;
                                  f&#34; is expected to have a non-empty default value&#34;)
 
-        default_unit = self.__parse_unit(default_unit_arg)
+        default_unit = self._parse_unit(default_unit_arg)
 
         if default_unit.to_base_units().magnitude != 1:
             raise AssertionError(f&#39;default value &#34;{default_unit_arg}&#34;&#39;
@@ -113,7 +118,7 @@ class Product:
 
     def get(self, **kwargs):
         result = self._impl(**kwargs)
-        const.convert_to(result, self._base_unit)
+        result /= self.unit_magnitude_in_base_units
         return result</code></pre>
 </details>
 </section>
@@ -140,8 +145,8 @@ class Product:
     def __init__(self, *, unit: str, name: Optional[str] = None):
         self.name = name or self._camel_case_to_words(self.__class__.__name__)
 
-        self._unit = self.__parse_unit(unit)
-        self._base_unit = self._unit.to_base_units().magnitude
+        self._unit = self._parse_unit(unit)
+        self.unit_magnitude_in_base_units = self._unit.to_base_units().magnitude
         self.__check_unit()
 
         self.shape = None
@@ -153,22 +158,24 @@ class Product:
         self.particulator = builder.particulator
         self.formulae = self.particulator.formulae
         self.shape = self.particulator.mesh.grid
-        self.buffer = np.empty(self.particulator.mesh.grid)
+
+    def set_buffer(self, buffer):
+        self.buffer = buffer
 
     def _download_to_buffer(self, storage):
         storage.download(self.buffer.ravel())
 
     @staticmethod
-    def __parse_unit(unit: str):
+    def _parse_unit(unit: str):
         if unit in (&#39;%&#39;, &#39;percent&#39;):
             return .01 * _UNIT_REGISTRY.dimensionless
         if unit in (&#39;PPB&#39;, &#39;ppb&#39;):
-            return const.PPB * _UNIT_REGISTRY.dimensionless
+            return PPB * _UNIT_REGISTRY.dimensionless
         if unit in (&#39;PPM&#39;, &#39;ppm&#39;):
-            return const.PPM * _UNIT_REGISTRY.dimensionless
+            return PPM * _UNIT_REGISTRY.dimensionless
         if unit in (&#39;PPT&#39;, &#39;ppt&#39;):
-            return const.PPT * _UNIT_REGISTRY.dimensionless
-        return _UNIT_REGISTRY[unit]
+            return PPT * _UNIT_REGISTRY.dimensionless
+        return _UNIT_REGISTRY.parse_expression(unit)
 
     @staticmethod
     def _camel_case_to_words(string: str):
@@ -188,7 +195,7 @@ class Product:
             raise AssertionError(f&#34;unit parameter of {type(self).__name__}.__init__&#34;
                                  f&#34; is expected to have a non-empty default value&#34;)
 
-        default_unit = self.__parse_unit(default_unit_arg)
+        default_unit = self._parse_unit(default_unit_arg)
 
         if default_unit.to_base_units().magnitude != 1:
             raise AssertionError(f&#39;default value &#34;{default_unit_arg}&#34;&#39;
@@ -211,7 +218,7 @@ class Product:
 
     def get(self, **kwargs):
         result = self._impl(**kwargs)
-        const.convert_to(result, self._base_unit)
+        result /= self.unit_magnitude_in_base_units
         return result</code></pre>
 </details>
 <h3>Subclasses</h3>
@@ -219,10 +226,10 @@ class Product:
 <li><a title="PySDM.products.aqueous_chemistry.gaseous_mole_fraction.GaseousMoleFraction" href="../aqueous_chemistry/gaseous_mole_fraction.html#PySDM.products.aqueous_chemistry.gaseous_mole_fraction.GaseousMoleFraction">GaseousMoleFraction</a></li>
 <li><a title="PySDM.products.coalescence.coalescence_timestep_mean.CoalescenceTimestepMean" href="../coalescence/coalescence_timestep_mean.html#PySDM.products.coalescence.coalescence_timestep_mean.CoalescenceTimestepMean">CoalescenceTimestepMean</a></li>
 <li><a title="PySDM.products.coalescence.coalescence_timestep_min.CoalescenceTimestepMin" href="../coalescence/coalescence_timestep_min.html#PySDM.products.coalescence.coalescence_timestep_min.CoalescenceTimestepMin">CoalescenceTimestepMin</a></li>
-<li>PySDM.products.coalescence.collision_rates._CollisionRateProduct</li>
 <li>PySDM.products.condensation.condensation_timestep._CondensationTimestep</li>
 <li><a title="PySDM.products.condensation.event_rates.EventRate" href="../condensation/event_rates.html#PySDM.products.condensation.event_rates.EventRate">EventRate</a></li>
 <li><a title="PySDM.products.condensation.peak_supersaturation.PeakSupersaturation" href="../condensation/peak_supersaturation.html#PySDM.products.condensation.peak_supersaturation.PeakSupersaturation">PeakSupersaturation</a></li>
+<li><a title="PySDM.products.displacement.max_courant_number.MaxCourantNumber" href="../displacement/max_courant_number.html#PySDM.products.displacement.max_courant_number.MaxCourantNumber">MaxCourantNumber</a></li>
 <li><a title="PySDM.products.displacement.surface_precipitation.SurfacePrecipitation" href="../displacement/surface_precipitation.html#PySDM.products.displacement.surface_precipitation.SurfacePrecipitation">SurfacePrecipitation</a></li>
 <li><a title="PySDM.products.housekeeping.dynamic_wall_time.DynamicWallTime" href="../housekeeping/dynamic_wall_time.html#PySDM.products.housekeeping.dynamic_wall_time.DynamicWallTime">DynamicWallTime</a></li>
 <li><a title="PySDM.products.housekeeping.parcel_displacement.ParcelDisplacement" href="../housekeeping/parcel_displacement.html#PySDM.products.housekeeping.parcel_displacement.ParcelDisplacement">ParcelDisplacement</a></li>
@@ -231,6 +238,7 @@ class Product:
 <li>PySDM.products.housekeeping.timers._Timer</li>
 <li><a title="PySDM.products.impl.moist_environment_product.MoistEnvironmentProduct" href="moist_environment_product.html#PySDM.products.impl.moist_environment_product.MoistEnvironmentProduct">MoistEnvironmentProduct</a></li>
 <li><a title="PySDM.products.impl.moment_product.MomentProduct" href="moment_product.html#PySDM.products.impl.moment_product.MomentProduct">MomentProduct</a></li>
+<li><a title="PySDM.products.impl.rate_product.RateProduct" href="rate_product.html#PySDM.products.impl.rate_product.RateProduct">RateProduct</a></li>
 <li><a title="PySDM.products.impl.spectrum_moment_product.SpectrumMomentProduct" href="spectrum_moment_product.html#PySDM.products.impl.spectrum_moment_product.SpectrumMomentProduct">SpectrumMomentProduct</a></li>
 </ul>
 <h3>Instance variables</h3>
@@ -261,7 +269,7 @@ def unit(self):
 </summary>
 <pre><code class="python">def get(self, **kwargs):
     result = self._impl(**kwargs)
-    const.convert_to(result, self._base_unit)
+    result /= self.unit_magnitude_in_base_units
     return result</code></pre>
 </details>
 </dd>
@@ -277,8 +285,20 @@ def unit(self):
 <pre><code class="python">def register(self, builder):
     self.particulator = builder.particulator
     self.formulae = self.particulator.formulae
-    self.shape = self.particulator.mesh.grid
-    self.buffer = np.empty(self.particulator.mesh.grid)</code></pre>
+    self.shape = self.particulator.mesh.grid</code></pre>
+</details>
+</dd>
+<dt id="PySDM.products.impl.product.Product.set_buffer"><code class="name flex">
+<span>def <span class="ident">set_buffer</span></span>(<span>self, buffer)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def set_buffer(self, buffer):
+    self.buffer = buffer</code></pre>
 </details>
 </dd>
 </dl>
@@ -304,6 +324,7 @@ def unit(self):
 <ul class="">
 <li><code><a title="PySDM.products.impl.product.Product.get" href="#PySDM.products.impl.product.Product.get">get</a></code></li>
 <li><code><a title="PySDM.products.impl.product.Product.register" href="#PySDM.products.impl.product.Product.register">register</a></code></li>
+<li><code><a title="PySDM.products.impl.product.Product.set_buffer" href="#PySDM.products.impl.product.Product.set_buffer">set_buffer</a></code></li>
 <li><code><a title="PySDM.products.impl.product.Product.unit" href="#PySDM.products.impl.product.Product.unit">unit</a></code></li>
 </ul>
 </li>

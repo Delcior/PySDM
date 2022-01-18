@@ -28,7 +28,7 @@ simulation systems revolving around the particle-based microphysics modelling co
 and the Super-Droplet Method algorithm (<a href="http://doi.org/10.1002/qj.441">Shima et al. 2009</a>)
 for numerically tackling the probabilistic representation of particle coagulation.</p>
 <p>For an overview of PySDM, see <a href="https://arxiv.org/abs/2103.17238">Bartman, Arabas et al. 2021</a>.
-PySDM is releases under the <a href="https://www.gnu.org/licenses/gpl-3.0.en.html">GNU GPL v3 license</a>.
+PySDM is released under the <a href="https://www.gnu.org/licenses/gpl-3.0.en.html">GNU GPL v3 license</a>.
 PySDM development has been spearheaded at the Faculty of Mathematics and Computer Science,
 <a href="https://en.uj.edu.pl/en">Jagiellonian University in Kraków</a> (the copyright holder).</p>
 <p>For details on PySDM dependencies and installation procedures, see project
@@ -51,7 +51,7 @@ and the Super-Droplet Method algorithm ([Shima et al. 2009](http://doi.org/10.10
 for numerically tackling the probabilistic representation of particle coagulation.
 
 For an overview of PySDM, see [Bartman, Arabas et al. 2021](https://arxiv.org/abs/2103.17238).
-PySDM is releases under the [GNU GPL v3 license](https://www.gnu.org/licenses/gpl-3.0.en.html).
+PySDM is released under the [GNU GPL v3 license](https://www.gnu.org/licenses/gpl-3.0.en.html).
 PySDM development has been spearheaded at the Faculty of Mathematics and Computer Science,
 [Jagiellonian University in Kraków](https://en.uj.edu.pl/en) (the copyright holder).
 
@@ -84,24 +84,22 @@ except (DistributionNotFound, VersionConflict):
 <dl>
 <dt><code class="name"><a title="PySDM.attributes" href="attributes/index.html">PySDM.attributes</a></code></dt>
 <dd>
-<div class="desc"><p>Classes representing particle properties such as
-<code><a title="PySDM.attributes.physics.multiplicities.Multiplicities" href="attributes/physics/multiplicities.html#PySDM.attributes.physics.multiplicities.Multiplicities">Multiplicities</a></code>,
-<code>PySDM.attributes.chemistry.pH.pH</code>, …</p></div>
+<div class="desc"><p>Classes representing super-particle attributes</p></div>
 </dd>
 <dt><code class="name"><a title="PySDM.backends" href="backends/index.html">PySDM.backends</a></code></dt>
 <dd>
-<div class="desc"><p>Backend classes: <code>CPU</code>=<code>PySDM.backends.impl_numba.impl_numba.Numba</code>
-and <code>GPU</code>=<code>PySDM.backends.thrust_rtc.thrust_rtc.ThrustRTC</code></p></div>
+<div class="desc"><p>Backend classes: CPU=<code><a title="PySDM.backends.numba.Numba" href="backends/numba.html#PySDM.backends.numba.Numba">Numba</a></code>
+and GPU=<code><a title="PySDM.backends.thrust_rtc.ThrustRTC" href="backends/thrust_rtc.html#PySDM.backends.thrust_rtc.ThrustRTC">ThrustRTC</a></code></p></div>
 </dd>
 <dt><code class="name"><a title="PySDM.builder" href="builder.html">PySDM.builder</a></code></dt>
 <dd>
 <div class="desc"><p>The Builder class handling creation of
-<code>PySDM.Particulator</code> instances</p></div>
+<code><a title="PySDM.particulator.Particulator" href="particulator.html#PySDM.particulator.Particulator">Particulator</a></code> instances</p></div>
 </dd>
 <dt><code class="name"><a title="PySDM.dynamics" href="dynamics/index.html">PySDM.dynamics</a></code></dt>
 <dd>
 <div class="desc"><p>Classes representing physicochemical processes:
-<code><a title="PySDM.dynamics.coalescence.Coalescence" href="dynamics/coalescence.html#PySDM.dynamics.coalescence.Coalescence">Coalescence</a></code>,
+<code><a title="PySDM.dynamics.collisions.coalescence.Coalescence" href="dynamics/collisions/coalescence.html#PySDM.dynamics.collisions.coalescence.Coalescence">Coalescence</a></code>,
 <code><a title="PySDM.dynamics.condensation.Condensation" href="dynamics/condensation.html#PySDM.dynamics.condensation.Condensation">Condensation</a></code>, &hellip;</p></div>
 </dd>
 <dt><code class="name"><a title="PySDM.environments" href="environments/index.html">PySDM.environments</a></code></dt>
@@ -112,7 +110,7 @@ and <code>GPU</code>=<code>PySDM.backends.thrust_rtc.thrust_rtc.ThrustRTC</code>
 </dd>
 <dt><code class="name"><a title="PySDM.exporters" href="exporters/index.html">PySDM.exporters</a></code></dt>
 <dd>
-<div class="desc"><p>Exporters module</p></div>
+<div class="desc"><p>Exporters handling output to metadata-rich file formats incl. netCDF and VTK</p></div>
 </dd>
 <dt><code class="name"><a title="PySDM.formulae" href="formulae.html">PySDM.formulae</a></code></dt>
 <dd>
@@ -120,25 +118,26 @@ and <code>GPU</code>=<code>PySDM.backends.thrust_rtc.thrust_rtc.ThrustRTC</code>
 </dd>
 <dt><code class="name"><a title="PySDM.impl" href="impl/index.html">PySDM.impl</a></code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>stuff not intended to be used from user code</p></div>
 </dd>
 <dt><code class="name"><a title="PySDM.initialisation" href="initialisation/index.html">PySDM.initialisation</a></code></dt>
 <dd>
-<div class="desc"><p>Initialisation logic particle size spectra, sampling methods and
+<div class="desc"><p>initialisation logic, particle size spectra, sampling methods and
 wet radii equilibration</p></div>
 </dd>
 <dt><code class="name"><a title="PySDM.particulator" href="particulator.html">PySDM.particulator</a></code></dt>
 <dd>
-<div class="desc"><p>The very class exposing <code>PySDM.Particulator.run()</code> method for launching simulations</p></div>
+<div class="desc"><p>The very class exposing <code><a title="PySDM.particulator.Particulator.run" href="particulator.html#PySDM.particulator.Particulator.run">Particulator.run()</a></code> method for launching simulations</p></div>
 </dd>
 <dt><code class="name"><a title="PySDM.physics" href="physics/index.html">PySDM.physics</a></code></dt>
 <dd>
-<div class="desc"><p>Physical <code><a title="PySDM.physics.constants" href="physics/constants.html">PySDM.physics.constants</a></code> and <code>PySDM.physics.formulae.Formulae</code></p></div>
+<div class="desc"><p>Physical <code><a title="PySDM.physics.constants" href="physics/constants.html">PySDM.physics.constants</a></code> and simple formulae (essentially one-liners)
+that can be automatically either njit-ted or translated to C (in …</p></div>
 </dd>
 <dt><code class="name"><a title="PySDM.products" href="products/index.html">PySDM.products</a></code></dt>
 <dd>
 <div class="desc"><p>Simulation output products such as:
-<code>PySDM.products.state.particles_size_spectrum.ParticlesSizeSpectrum</code>,
+<code><a title="PySDM.products.size_spectral.particle_size_spectrum.ParticleSizeSpectrum" href="products/size_spectral/particle_size_spectrum.html#PySDM.products.size_spectral.particle_size_spectrum.ParticleSizeSpectrum">ParticleSizeSpectrum</a></code>,
 &hellip;</p></div>
 </dd>
 </dl>

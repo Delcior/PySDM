@@ -4,10 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
-<title>PySDM.physics.coalescence_kernels API documentation</title>
-<meta name="description" content="Coalescence kernels including
-[Golovin](https://atmos-cloud-sim-uj.github.io/PySDM/physics/coalescence_kernels/golovin.html),
-…" />
+<title>PySDM.dynamics.collisions.kernels.hydrodynamic API documentation</title>
+<meta name="description" content="hydrodynamic kernel using
+[Berry 1967](https://doi.org/10.1175/1520-0469(1967)024%3C0688:CDGBC%3E2.0.CO;2) parameterization" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -21,55 +20,57 @@
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>PySDM.physics.coalescence_kernels</code></h1>
+<h1 class="title">Module <code>PySDM.dynamics.collisions.kernels.hydrodynamic</code></h1>
 </header>
 <section id="section-intro">
-<p>Coalescence kernels including
-<a href="https://atmos-cloud-sim-uj.github.io/PySDM/physics/coalescence_kernels/golovin.html">Golovin</a>,
-<a href="https://atmos-cloud-sim-uj.github.io/PySDM/physics/coalescence_kernels/geometric.html">Geometric</a>
-and other&hellip;</p>
+<p>hydrodynamic kernel using
+<a href="https://doi.org/10.1175/1520-0469(1967)024%3C0688:CDGBC%3E2.0.CO;2">Berry 1967</a> parameterization</p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">&#34;&#34;&#34;
-Coalescence kernels including
-[Golovin](https://atmos-cloud-sim-uj.github.io/PySDM/physics/coalescence_kernels/golovin.html),
-[Geometric](https://atmos-cloud-sim-uj.github.io/PySDM/physics/coalescence_kernels/geometric.html)
-and other...
+hydrodynamic kernel using
+ [Berry 1967](https://doi.org/10.1175/1520-0469(1967)024%3C0688:CDGBC%3E2.0.CO;2) parameterization
 &#34;&#34;&#34;
-from .golovin import Golovin
-from .geometric import Geometric
-from .hydrodynamic import Hydrodynamic
-from .electric import Electric</code></pre>
+
+from PySDM.dynamics.collisions.kernels.impl.parameterized import Parameterized
+
+
+class Hydrodynamic(Parameterized):
+    def __init__(self):
+        super().__init__((1, 1, -27, 1.65, -58, 1.9, 15, 1.13, 16.7, 1, .004, 4, 8))</code></pre>
 </details>
 </section>
 <section>
-<h2 class="section-title" id="header-submodules">Sub-modules</h2>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
-<dt><code class="name"><a title="PySDM.physics.coalescence_kernels.electric" href="electric.html">PySDM.physics.coalescence_kernels.electric</a></code></dt>
+<dt id="PySDM.dynamics.collisions.kernels.hydrodynamic.Hydrodynamic"><code class="flex name class">
+<span>class <span class="ident">Hydrodynamic</span></span>
+</code></dt>
 <dd>
 <div class="desc"></div>
-</dd>
-<dt><code class="name"><a title="PySDM.physics.coalescence_kernels.geometric" href="geometric.html">PySDM.physics.coalescence_kernels.geometric</a></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt><code class="name"><a title="PySDM.physics.coalescence_kernels.golovin" href="golovin.html">PySDM.physics.coalescence_kernels.golovin</a></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt><code class="name"><a title="PySDM.physics.coalescence_kernels.hydrodynamic" href="hydrodynamic.html">PySDM.physics.coalescence_kernels.hydrodynamic</a></code></dt>
-<dd>
-<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Hydrodynamic(Parameterized):
+    def __init__(self):
+        super().__init__((1, 1, -27, 1.65, -58, 1.9, 15, 1.13, 16.7, 1, .004, 4, 8))</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="PySDM.dynamics.collisions.kernels.impl.parameterized.Parameterized" href="impl/parameterized.html#PySDM.dynamics.collisions.kernels.impl.parameterized.Parameterized">Parameterized</a></li>
+<li><a title="PySDM.dynamics.collisions.kernels.impl.gravitational.Gravitational" href="impl/gravitational.html#PySDM.dynamics.collisions.kernels.impl.gravitational.Gravitational">Gravitational</a></li>
+</ul>
 </dd>
 </dl>
-</section>
-<section>
-</section>
-<section>
-</section>
-<section>
 </section>
 </article>
 <nav id="sidebar">
@@ -80,15 +81,14 @@ from .electric import Electric</code></pre>
 <ul id="index">
 <li><h3>Super-module</h3>
 <ul>
-<li><code><a title="PySDM.physics" href="../index.html">PySDM.physics</a></code></li>
+<li><code><a title="PySDM.dynamics.collisions.kernels" href="index.html">PySDM.dynamics.collisions.kernels</a></code></li>
 </ul>
 </li>
-<li><h3><a href="#header-submodules">Sub-modules</a></h3>
+<li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
-<li><code><a title="PySDM.physics.coalescence_kernels.electric" href="electric.html">PySDM.physics.coalescence_kernels.electric</a></code></li>
-<li><code><a title="PySDM.physics.coalescence_kernels.geometric" href="geometric.html">PySDM.physics.coalescence_kernels.geometric</a></code></li>
-<li><code><a title="PySDM.physics.coalescence_kernels.golovin" href="golovin.html">PySDM.physics.coalescence_kernels.golovin</a></code></li>
-<li><code><a title="PySDM.physics.coalescence_kernels.hydrodynamic" href="hydrodynamic.html">PySDM.physics.coalescence_kernels.hydrodynamic</a></code></li>
+<li>
+<h4><code><a title="PySDM.dynamics.collisions.kernels.hydrodynamic.Hydrodynamic" href="#PySDM.dynamics.collisions.kernels.hydrodynamic.Hydrodynamic">Hydrodynamic</a></code></h4>
+</li>
 </ul>
 </li>
 </ul>

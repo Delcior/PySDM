@@ -5,7 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
 <title>PySDM.physics.hygroscopicity.kappa_koehler API documentation</title>
-<meta name="description" content="" />
+<meta name="description" content="kappa-Koehler parameterization
+([Petters &amp; Kreidenweis 2007](https://doi.org/10.5194/acp-7-1961-2007))" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -22,25 +23,33 @@
 <h1 class="title">Module <code>PySDM.physics.hygroscopicity.kappa_koehler</code></h1>
 </header>
 <section id="section-intro">
+<p>kappa-Koehler parameterization
+(<a href="https://doi.org/10.5194/acp-7-1961-2007">Petters &amp; Kreidenweis 2007</a>)</p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">from numpy import sqrt, exp
-import PySDM.physics.constants as const
+<pre><code class="python">&#34;&#34;&#34;
+kappa-Koehler parameterization
+ ([Petters &amp; Kreidenweis 2007](https://doi.org/10.5194/acp-7-1961-2007))
+&#34;&#34;&#34;
+import numpy as np
 
 
 class KappaKoehler:
+    def __init__(self, _):
+        pass
+
     @staticmethod
-    def RH_eq(r, T, kp, rd3, sgm):
-        return exp(
+    def RH_eq(const, r, T, kp, rd3, sgm):
+        return np.exp(
             (2 * sgm / const.Rv / T / const.rho_w) / r
         ) * (r**3 - rd3) / (r**3 - rd3 * (1-kp))
 
     @staticmethod
-    def r_cr(kp, rd3, T, sgm):
+    def r_cr(const, kp, rd3, T, sgm):
         # TODO #493
-        return sqrt(3 * kp * rd3 / (2 * sgm / const.Rv / T / const.rho_w))</code></pre>
+        return np.sqrt(3 * kp * rd3 / (2 * sgm / const.Rv / T / const.rho_w))</code></pre>
 </details>
 </section>
 <section>
@@ -54,6 +63,7 @@ class KappaKoehler:
 <dl>
 <dt id="PySDM.physics.hygroscopicity.kappa_koehler.KappaKoehler"><code class="flex name class">
 <span>class <span class="ident">KappaKoehler</span></span>
+<span>(</span><span>_)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -62,21 +72,24 @@ class KappaKoehler:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class KappaKoehler:
+    def __init__(self, _):
+        pass
+
     @staticmethod
-    def RH_eq(r, T, kp, rd3, sgm):
-        return exp(
+    def RH_eq(const, r, T, kp, rd3, sgm):
+        return np.exp(
             (2 * sgm / const.Rv / T / const.rho_w) / r
         ) * (r**3 - rd3) / (r**3 - rd3 * (1-kp))
 
     @staticmethod
-    def r_cr(kp, rd3, T, sgm):
+    def r_cr(const, kp, rd3, T, sgm):
         # TODO #493
-        return sqrt(3 * kp * rd3 / (2 * sgm / const.Rv / T / const.rho_w))</code></pre>
+        return np.sqrt(3 * kp * rd3 / (2 * sgm / const.Rv / T / const.rho_w))</code></pre>
 </details>
 <h3>Static methods</h3>
 <dl>
 <dt id="PySDM.physics.hygroscopicity.kappa_koehler.KappaKoehler.RH_eq"><code class="name flex">
-<span>def <span class="ident">RH_eq</span></span>(<span>r, T, kp, rd3, sgm)</span>
+<span>def <span class="ident">RH_eq</span></span>(<span>const, r, T, kp, rd3, sgm)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -85,14 +98,14 @@ class KappaKoehler:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-def RH_eq(r, T, kp, rd3, sgm):
-    return exp(
+def RH_eq(const, r, T, kp, rd3, sgm):
+    return np.exp(
         (2 * sgm / const.Rv / T / const.rho_w) / r
     ) * (r**3 - rd3) / (r**3 - rd3 * (1-kp))</code></pre>
 </details>
 </dd>
 <dt id="PySDM.physics.hygroscopicity.kappa_koehler.KappaKoehler.r_cr"><code class="name flex">
-<span>def <span class="ident">r_cr</span></span>(<span>kp, rd3, T, sgm)</span>
+<span>def <span class="ident">r_cr</span></span>(<span>const, kp, rd3, T, sgm)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -101,9 +114,9 @@ def RH_eq(r, T, kp, rd3, sgm):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-def r_cr(kp, rd3, T, sgm):
+def r_cr(const, kp, rd3, T, sgm):
     # TODO #493
-    return sqrt(3 * kp * rd3 / (2 * sgm / const.Rv / T / const.rho_w))</code></pre>
+    return np.sqrt(3 * kp * rd3 / (2 * sgm / const.Rv / T / const.rho_w))</code></pre>
 </details>
 </dd>
 </dl>

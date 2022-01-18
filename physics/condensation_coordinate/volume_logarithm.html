@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
 <title>PySDM.physics.condensation_coordinate.volume_logarithm API documentation</title>
-<meta name="description" content="" />
+<meta name="description" content="logarithm of particle volume as coordinate (ensures non-negative values)" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -22,26 +22,32 @@
 <h1 class="title">Module <code>PySDM.physics.condensation_coordinate.volume_logarithm</code></h1>
 </header>
 <section id="section-intro">
+<p>logarithm of particle volume as coordinate (ensures non-negative values)</p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">from numpy import log, exp, power
-from PySDM.physics import constants as const
+<pre><code class="python">&#34;&#34;&#34;
+logarithm of particle volume as coordinate (ensures non-negative values)
+&#34;&#34;&#34;
+import numpy as np
 
 
 class VolumeLogarithm:
+    def __init__(self, _):
+        pass
+
     @staticmethod
-    def dx_dt(x, r_dr_dt):
-        return exp(-const.TWO_THIRDS * x) * r_dr_dt * 3 * power(const.PI_4_3, const.TWO_THIRDS)
+    def dx_dt(const, x, r_dr_dt):
+        return np.exp(-const.TWO_THIRDS * x) * r_dr_dt * 3*np.power(const.PI_4_3, const.TWO_THIRDS)
 
     @staticmethod
     def volume(x):
-        return exp(x)
+        return np.exp(x)
 
     @staticmethod
     def x(volume):
-        return log(volume)</code></pre>
+        return np.log(volume)</code></pre>
 </details>
 </section>
 <section>
@@ -55,6 +61,7 @@ class VolumeLogarithm:
 <dl>
 <dt id="PySDM.physics.condensation_coordinate.volume_logarithm.VolumeLogarithm"><code class="flex name class">
 <span>class <span class="ident">VolumeLogarithm</span></span>
+<span>(</span><span>_)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -63,22 +70,25 @@ class VolumeLogarithm:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class VolumeLogarithm:
+    def __init__(self, _):
+        pass
+
     @staticmethod
-    def dx_dt(x, r_dr_dt):
-        return exp(-const.TWO_THIRDS * x) * r_dr_dt * 3 * power(const.PI_4_3, const.TWO_THIRDS)
+    def dx_dt(const, x, r_dr_dt):
+        return np.exp(-const.TWO_THIRDS * x) * r_dr_dt * 3*np.power(const.PI_4_3, const.TWO_THIRDS)
 
     @staticmethod
     def volume(x):
-        return exp(x)
+        return np.exp(x)
 
     @staticmethod
     def x(volume):
-        return log(volume)</code></pre>
+        return np.log(volume)</code></pre>
 </details>
 <h3>Static methods</h3>
 <dl>
 <dt id="PySDM.physics.condensation_coordinate.volume_logarithm.VolumeLogarithm.dx_dt"><code class="name flex">
-<span>def <span class="ident">dx_dt</span></span>(<span>x, r_dr_dt)</span>
+<span>def <span class="ident">dx_dt</span></span>(<span>const, x, r_dr_dt)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -87,8 +97,8 @@ class VolumeLogarithm:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-def dx_dt(x, r_dr_dt):
-    return exp(-const.TWO_THIRDS * x) * r_dr_dt * 3 * power(const.PI_4_3, const.TWO_THIRDS)</code></pre>
+def dx_dt(const, x, r_dr_dt):
+    return np.exp(-const.TWO_THIRDS * x) * r_dr_dt * 3*np.power(const.PI_4_3, const.TWO_THIRDS)</code></pre>
 </details>
 </dd>
 <dt id="PySDM.physics.condensation_coordinate.volume_logarithm.VolumeLogarithm.volume"><code class="name flex">
@@ -102,7 +112,7 @@ def dx_dt(x, r_dr_dt):
 </summary>
 <pre><code class="python">@staticmethod
 def volume(x):
-    return exp(x)</code></pre>
+    return np.exp(x)</code></pre>
 </details>
 </dd>
 <dt id="PySDM.physics.condensation_coordinate.volume_logarithm.VolumeLogarithm.x"><code class="name flex">
@@ -116,7 +126,7 @@ def volume(x):
 </summary>
 <pre><code class="python">@staticmethod
 def x(volume):
-    return log(volume)</code></pre>
+    return np.log(volume)</code></pre>
 </details>
 </dd>
 </dl>

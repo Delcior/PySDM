@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
 <title>PySDM.attributes.physics.critical_supersaturation API documentation</title>
-<meta name="description" content="" />
+<meta name="description" content="kappa-Koehler critical supersaturation calculated for actual environment temperature" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -22,12 +22,15 @@
 <h1 class="title">Module <code>PySDM.attributes.physics.critical_supersaturation</code></h1>
 </header>
 <section id="section-intro">
+<p>kappa-Koehler critical supersaturation calculated for actual environment temperature</p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">from PySDM.attributes.impl.derived_attribute import DerivedAttribute
-from PySDM.physics import constants as const
+<pre><code class="python">&#34;&#34;&#34;
+kappa-Koehler critical supersaturation calculated for actual environment temperature
+&#34;&#34;&#34;
+from PySDM.attributes.impl.derived_attribute import DerivedAttribute
 
 
 class CriticalSupersaturation(DerivedAttribute):
@@ -42,15 +45,13 @@ class CriticalSupersaturation(DerivedAttribute):
             name=&#39;critical supersaturation&#39;,
             dependencies=(self.v_crit, self.kappa, self.v_dry, self.f_org)
         )
-        self.formulae = builder.particulator.formulae
-        self.environment = builder.particulator.environment
 
     def recalculate(self):
-        if len(self.environment[&#39;T&#39;]) != 1:
+        if len(self.particulator.environment[&#39;T&#39;]) != 1:
             raise NotImplementedError()
-        temperature = self.environment[&#39;T&#39;][0]
+        temperature = self.particulator.environment[&#39;T&#39;][0]
         r_cr = self.formulae.trivia.radius(self.v_crit.data.data)
-        rd3 = self.v_dry.data.data / const.PI_4_3
+        rd3 = self.v_dry.data.data / self.formulae.constants.PI_4_3
         sgm = self.formulae.surface_tension.sigma(
             temperature, self.v_crit.data.data, self.v_dry.data.data, self.f_org.data.data
         )
@@ -95,15 +96,13 @@ class CriticalSupersaturation(DerivedAttribute):
             name=&#39;critical supersaturation&#39;,
             dependencies=(self.v_crit, self.kappa, self.v_dry, self.f_org)
         )
-        self.formulae = builder.particulator.formulae
-        self.environment = builder.particulator.environment
 
     def recalculate(self):
-        if len(self.environment[&#39;T&#39;]) != 1:
+        if len(self.particulator.environment[&#39;T&#39;]) != 1:
             raise NotImplementedError()
-        temperature = self.environment[&#39;T&#39;][0]
+        temperature = self.particulator.environment[&#39;T&#39;][0]
         r_cr = self.formulae.trivia.radius(self.v_crit.data.data)
-        rd3 = self.v_dry.data.data / const.PI_4_3
+        rd3 = self.v_dry.data.data / self.formulae.constants.PI_4_3
         sgm = self.formulae.surface_tension.sigma(
             temperature, self.v_crit.data.data, self.v_dry.data.data, self.f_org.data.data
         )
@@ -133,11 +132,11 @@ class CriticalSupersaturation(DerivedAttribute):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def recalculate(self):
-    if len(self.environment[&#39;T&#39;]) != 1:
+    if len(self.particulator.environment[&#39;T&#39;]) != 1:
         raise NotImplementedError()
-    temperature = self.environment[&#39;T&#39;][0]
+    temperature = self.particulator.environment[&#39;T&#39;][0]
     r_cr = self.formulae.trivia.radius(self.v_crit.data.data)
-    rd3 = self.v_dry.data.data / const.PI_4_3
+    rd3 = self.v_dry.data.data / self.formulae.constants.PI_4_3
     sgm = self.formulae.surface_tension.sigma(
         temperature, self.v_crit.data.data, self.v_dry.data.data, self.f_org.data.data
     )

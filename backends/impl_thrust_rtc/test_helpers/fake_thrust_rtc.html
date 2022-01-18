@@ -5,7 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
 <title>PySDM.backends.impl_thrust_rtc.test_helpers.fake_thrust_rtc API documentation</title>
-<meta name="description" content="" />
+<meta name="description" content="Numba-based implementation of ThrustRTC API involving translation of C++ code
+to njitted (and multi-threaded) Python code - a hacky workaround …" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -22,11 +23,19 @@
 <h1 class="title">Module <code>PySDM.backends.impl_thrust_rtc.test_helpers.fake_thrust_rtc</code></h1>
 </header>
 <section id="section-intro">
+<p>Numba-based implementation of ThrustRTC API involving translation of C++ code
+to njitted (and multi-threaded) Python code - a hacky workaround enabling
+testing ThrustRTC code on machines with no GPU/CUDA</p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python"># pylint: disable=no-member,unsupported-assignment-operation,unsubscriptable-object,no-value-for-parameter
+<pre><code class="python">&#34;&#34;&#34;
+Numba-based implementation of ThrustRTC API involving translation of C++ code
+ to njitted (and multi-threaded) Python code - a hacky workaround enabling
+ testing ThrustRTC code on machines with no GPU/CUDA
+&#34;&#34;&#34;
+# pylint: disable=no-member,unsupported-assignment-operation,unsubscriptable-object,no-value-for-parameter
 import types
 import warnings
 
@@ -68,6 +77,13 @@ class FakeThrustRTC:  # pylint: disable=too-many-public-methods
 
         def __getitem__(self, item):
             return self.ndarray[item]
+
+        def name_elem_cls(self):
+            return {
+                &#39;f&#39;: &#39;float&#39;,
+                &#39;d&#39;: &#39;double&#39;,
+                &#39;l&#39;: &#39;long&#39;
+            }[np.ctypeslib.as_ctypes_type(self.ndarray.dtype)._type_]
 
     class Number:
         def __init__(self, number):
@@ -132,6 +148,8 @@ class FakeThrustRTC:  # pylint: disable=too-many-public-methods
 
     @staticmethod
     def device_vector(elem_cls, size):
+        if not size &gt; 0:
+            raise ValueError(&#39;size must be &gt;0&#39;)
         if elem_cls == &#39;double&#39;:
             dtype = np.float64
         elif elem_cls == &#39;float&#39;:
@@ -219,7 +237,15 @@ class FakeThrustRTC:  # pylint: disable=too-many-public-methods
     @staticmethod
     def Sort_By_Key(keys, values):  # pylint: disable=invalid-name
         values.ndarray[:] = values.ndarray[np.argsort(keys.ndarray)]
-        # TODO #328 Thrust sorts keys as well</code></pre>
+        # TODO #328 Thrust sorts keys as well
+
+    @staticmethod
+    def Set_Kernel_Debug(_):  # pylint: disable=invalid-name
+        pass
+
+    @staticmethod
+    def Set_Verbose(_):  # pylint: disable=invalid-name
+        pass</code></pre>
 </details>
 </section>
 <section>
@@ -273,6 +299,13 @@ class FakeThrustRTC:  # pylint: disable=too-many-public-methods
         def __getitem__(self, item):
             return self.ndarray[item]
 
+        def name_elem_cls(self):
+            return {
+                &#39;f&#39;: &#39;float&#39;,
+                &#39;d&#39;: &#39;double&#39;,
+                &#39;l&#39;: &#39;long&#39;
+            }[np.ctypeslib.as_ctypes_type(self.ndarray.dtype)._type_]
+
     class Number:
         def __init__(self, number):
             self.ndarray = number
@@ -336,6 +369,8 @@ class FakeThrustRTC:  # pylint: disable=too-many-public-methods
 
     @staticmethod
     def device_vector(elem_cls, size):
+        if not size &gt; 0:
+            raise ValueError(&#39;size must be &gt;0&#39;)
         if elem_cls == &#39;double&#39;:
             dtype = np.float64
         elif elem_cls == &#39;float&#39;:
@@ -423,7 +458,15 @@ class FakeThrustRTC:  # pylint: disable=too-many-public-methods
     @staticmethod
     def Sort_By_Key(keys, values):  # pylint: disable=invalid-name
         values.ndarray[:] = values.ndarray[np.argsort(keys.ndarray)]
-        # TODO #328 Thrust sorts keys as well</code></pre>
+        # TODO #328 Thrust sorts keys as well
+
+    @staticmethod
+    def Set_Kernel_Debug(_):  # pylint: disable=invalid-name
+        pass
+
+    @staticmethod
+    def Set_Verbose(_):  # pylint: disable=invalid-name
+        pass</code></pre>
 </details>
 <h3>Class variables</h3>
 <dl>
@@ -692,6 +735,34 @@ def Reduce(dvvector, start, operator):  # pylint: disable=invalid-name
     raise NotImplementedError()</code></pre>
 </details>
 </dd>
+<dt id="PySDM.backends.impl_thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.Set_Kernel_Debug"><code class="name flex">
+<span>def <span class="ident">Set_Kernel_Debug</span></span>(<span>_)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def Set_Kernel_Debug(_):  # pylint: disable=invalid-name
+    pass</code></pre>
+</details>
+</dd>
+<dt id="PySDM.backends.impl_thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.Set_Verbose"><code class="name flex">
+<span>def <span class="ident">Set_Verbose</span></span>(<span>_)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def Set_Verbose(_):  # pylint: disable=invalid-name
+    pass</code></pre>
+</details>
+</dd>
 <dt id="PySDM.backends.impl_thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.Sort"><code class="name flex">
 <span>def <span class="ident">Sort</span></span>(<span>dvvector: <a title="PySDM.backends.impl_thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.DVVector" href="#PySDM.backends.impl_thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.DVVector">FakeThrustRTC.DVVector</a>)</span>
 </code></dt>
@@ -765,6 +836,8 @@ def Wait():  # pylint: disable=invalid-name
 </summary>
 <pre><code class="python">@staticmethod
 def device_vector(elem_cls, size):
+    if not size &gt; 0:
+        raise ValueError(&#39;size must be &gt;0&#39;)
     if elem_cls == &#39;double&#39;:
         dtype = np.float64
     elif elem_cls == &#39;float&#39;:
@@ -837,6 +910,8 @@ def device_vector_from_numpy(ndarray):
 <li><code><a title="PySDM.backends.impl_thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.Number" href="#PySDM.backends.impl_thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.Number">Number</a></code></li>
 <li><code><a title="PySDM.backends.impl_thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.Plus" href="#PySDM.backends.impl_thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.Plus">Plus</a></code></li>
 <li><code><a title="PySDM.backends.impl_thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.Reduce" href="#PySDM.backends.impl_thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.Reduce">Reduce</a></code></li>
+<li><code><a title="PySDM.backends.impl_thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.Set_Kernel_Debug" href="#PySDM.backends.impl_thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.Set_Kernel_Debug">Set_Kernel_Debug</a></code></li>
+<li><code><a title="PySDM.backends.impl_thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.Set_Verbose" href="#PySDM.backends.impl_thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.Set_Verbose">Set_Verbose</a></code></li>
 <li><code><a title="PySDM.backends.impl_thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.Sort" href="#PySDM.backends.impl_thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.Sort">Sort</a></code></li>
 <li><code><a title="PySDM.backends.impl_thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.Sort_By_Key" href="#PySDM.backends.impl_thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.Sort_By_Key">Sort_By_Key</a></code></li>
 <li><code><a title="PySDM.backends.impl_thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.Transform_Binary" href="#PySDM.backends.impl_thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.Transform_Binary">Transform_Binary</a></code></li>

@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
 <title>PySDM.physics.particle_advection.implicit_in_space API documentation</title>
-<meta name="description" content="" />
+<meta name="description" content="eqs. 14-16 in [Arabas et al. 2015](https://doi.org/10.5194/gmd-8-1677-2015)" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -22,14 +22,22 @@
 <h1 class="title">Module <code>PySDM.physics.particle_advection.implicit_in_space</code></h1>
 </header>
 <section id="section-intro">
+<p>eqs. 14-16 in <a href="https://doi.org/10.5194/gmd-8-1677-2015">Arabas et al. 2015</a></p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class ImplicitInSpace:
-    # eqs. 14-16 in Arabas et al. 2015 (libcloudph++)
+<pre><code class="python">&#34;&#34;&#34;
+eqs. 14-16 in [Arabas et al. 2015](https://doi.org/10.5194/gmd-8-1677-2015)
+&#34;&#34;&#34;
+
+
+class ImplicitInSpace:
+    def __init__(self, _):
+        pass
+
     @staticmethod
-    def displacement(omega, c_l, c_r):
+    def displacement(_, omega, c_l, c_r):
         return (omega * c_r + c_l * (1 - omega)) / (1 - c_r + c_l)</code></pre>
 </details>
 </section>
@@ -44,6 +52,7 @@
 <dl>
 <dt id="PySDM.physics.particle_advection.implicit_in_space.ImplicitInSpace"><code class="flex name class">
 <span>class <span class="ident">ImplicitInSpace</span></span>
+<span>(</span><span>_)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -52,15 +61,17 @@
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class ImplicitInSpace:
-    # eqs. 14-16 in Arabas et al. 2015 (libcloudph++)
+    def __init__(self, _):
+        pass
+
     @staticmethod
-    def displacement(omega, c_l, c_r):
+    def displacement(_, omega, c_l, c_r):
         return (omega * c_r + c_l * (1 - omega)) / (1 - c_r + c_l)</code></pre>
 </details>
 <h3>Static methods</h3>
 <dl>
 <dt id="PySDM.physics.particle_advection.implicit_in_space.ImplicitInSpace.displacement"><code class="name flex">
-<span>def <span class="ident">displacement</span></span>(<span>omega, c_l, c_r)</span>
+<span>def <span class="ident">displacement</span></span>(<span>_, omega, c_l, c_r)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -69,7 +80,7 @@
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-def displacement(omega, c_l, c_r):
+def displacement(_, omega, c_l, c_r):
     return (omega * c_r + c_l * (1 - omega)) / (1 - c_r + c_l)</code></pre>
 </details>
 </dd>

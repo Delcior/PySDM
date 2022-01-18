@@ -5,7 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
 <title>PySDM.attributes.impl.derived_attribute API documentation</title>
-<meta name="description" content="" />
+<meta name="description" content="logic around `PySDM.attributes.impl.derived_attribute.DerivedAttribute` - the parent class
+for all derived attributes" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -22,16 +23,23 @@
 <h1 class="title">Module <code>PySDM.attributes.impl.derived_attribute</code></h1>
 </header>
 <section id="section-intro">
+<p>logic around <code><a title="PySDM.attributes.impl.derived_attribute.DerivedAttribute" href="#PySDM.attributes.impl.derived_attribute.DerivedAttribute">DerivedAttribute</a></code> - the parent class
+for all derived attributes</p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">from .attribute import Attribute
+<pre><code class="python">&#34;&#34;&#34;
+logic around `PySDM.attributes.impl.derived_attribute.DerivedAttribute` - the parent class
+for all derived attributes
+&#34;&#34;&#34;
+from .attribute import Attribute
 
 
 class DerivedAttribute(Attribute):
 
     def __init__(self, builder, name, dependencies):
+        assert len(dependencies) &gt; 0
         super().__init__(builder, name)
         self.dependencies = dependencies
 
@@ -72,6 +80,7 @@ class DerivedAttribute(Attribute):
 <pre><code class="python">class DerivedAttribute(Attribute):
 
     def __init__(self, builder, name, dependencies):
+        assert len(dependencies) &gt; 0
         super().__init__(builder, name)
         self.dependencies = dependencies
 
@@ -97,6 +106,7 @@ class DerivedAttribute(Attribute):
 <ul class="hlist">
 <li><a title="PySDM.attributes.chemistry.acidity.Acidity" href="../chemistry/acidity.html#PySDM.attributes.chemistry.acidity.Acidity">Acidity</a></li>
 <li><a title="PySDM.attributes.chemistry.hydrogen_ion_concentration.HydrogenIonConcentration" href="../chemistry/hydrogen_ion_concentration.html#PySDM.attributes.chemistry.hydrogen_ion_concentration.HydrogenIonConcentration">HydrogenIonConcentration</a></li>
+<li><a title="PySDM.attributes.ice.cooling_rate.CoolingRate" href="../ice/cooling_rate.html#PySDM.attributes.ice.cooling_rate.CoolingRate">CoolingRate</a></li>
 <li><a title="PySDM.attributes.impl.intensive_attribute.IntensiveAttribute" href="intensive_attribute.html#PySDM.attributes.impl.intensive_attribute.IntensiveAttribute">IntensiveAttribute</a></li>
 <li><a title="PySDM.attributes.physics.critical_supersaturation.CriticalSupersaturation" href="../physics/critical_supersaturation.html#PySDM.attributes.physics.critical_supersaturation.CriticalSupersaturation">CriticalSupersaturation</a></li>
 <li><a title="PySDM.attributes.physics.critical_volume.CriticalVolume" href="../physics/critical_volume.html#PySDM.attributes.physics.critical_volume.CriticalVolume">CriticalVolume</a></li>

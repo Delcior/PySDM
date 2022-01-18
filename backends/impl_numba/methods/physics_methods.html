@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
 <title>PySDM.backends.impl_numba.methods.physics_methods API documentation</title>
-<meta name="description" content="" />
+<meta name="description" content="CPU implementation of backend methods wrapping basic physics formulae" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -22,14 +22,17 @@
 <h1 class="title">Module <code>PySDM.backends.impl_numba.methods.physics_methods</code></h1>
 </header>
 <section id="section-intro">
+<p>CPU implementation of backend methods wrapping basic physics formulae</p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">import numba
+<pre><code class="python">&#34;&#34;&#34;
+CPU implementation of backend methods wrapping basic physics formulae
+&#34;&#34;&#34;
+import numba
 from numba import prange
 from PySDM.backends.impl_numba import conf
-from PySDM.physics import constants as const
 from PySDM.backends.impl_common.backend_methods import BackendMethods
 
 
@@ -37,6 +40,7 @@ class PhysicsMethods(BackendMethods):
     def __init__(self):
         super().__init__()
         pvs_C = self.formulae.saturation_vapour_pressure.pvs_Celsius
+        pvi_C = self.formulae.saturation_vapour_pressure.ice_Celsius
         phys_T = self.formulae.state_variable_triplet.T
         phys_p = self.formulae.state_variable_triplet.p
         phys_pv = self.formulae.state_variable_triplet.pv
@@ -44,6 +48,7 @@ class PhysicsMethods(BackendMethods):
         phys_sigma = self.formulae.surface_tension.sigma
         phys_volume = self.formulae.trivia.volume
         phys_r_cr = self.formulae.hygroscopicity.r_cr
+        const = self.formulae.constants
 
         @numba.njit(**{**conf.JIT_FLAGS, &#39;fastmath&#39;: self.formulae.fastmath})
         def explicit_euler_body(y, dt, dy_dt):
@@ -81,6 +86,15 @@ class PhysicsMethods(BackendMethods):
                     values[i] = k3 * radius[i] ** (1 / 2)
         self.terminal_velocity_body = terminal_velocity_body
 
+        @numba.njit(**{**conf.JIT_FLAGS, &#39;fastmath&#39;: self.formulae.fastmath})
+        def a_w_ice_body(T_in, p_in, RH_in, qv_in, a_w_ice_out):
+            for i in prange(T_in.shape[0]):  # pylint: disable=not-an-iterable
+                pvi = pvi_C(T_in[i] - const.T0)
+                pv = phys_pv(p_in[i], qv_in[i])
+                pvs = pv / RH_in[i]
+                a_w_ice_out[i] = pvi / pvs
+        self.a_w_ice_body = a_w_ice_body
+
     def temperature_pressure_RH(self, rhod, thd, qv, T, p, RH):
         self.temperature_pressure_RH_body(rhod.data, thd.data, qv.data, T.data, p.data, RH.data)
 
@@ -93,7 +107,10 @@ class PhysicsMethods(BackendMethods):
     def critical_volume(self, v_cr, kappa, f_org, v_dry, v_wet, T, cell):
         self.critical_volume_body(
             v_cr.data, kappa.data, f_org.data, v_dry.data, v_wet.data, T.data, cell.data
-        )</code></pre>
+        )
+
+    def a_w_ice(self, T, p, RH, qv, a_w_ice):
+        self.a_w_ice_body(T.data, p.data, RH.data, qv.data, a_w_ice.data)</code></pre>
 </details>
 </section>
 <section>
@@ -118,6 +135,7 @@ class PhysicsMethods(BackendMethods):
     def __init__(self):
         super().__init__()
         pvs_C = self.formulae.saturation_vapour_pressure.pvs_Celsius
+        pvi_C = self.formulae.saturation_vapour_pressure.ice_Celsius
         phys_T = self.formulae.state_variable_triplet.T
         phys_p = self.formulae.state_variable_triplet.p
         phys_pv = self.formulae.state_variable_triplet.pv
@@ -125,6 +143,7 @@ class PhysicsMethods(BackendMethods):
         phys_sigma = self.formulae.surface_tension.sigma
         phys_volume = self.formulae.trivia.volume
         phys_r_cr = self.formulae.hygroscopicity.r_cr
+        const = self.formulae.constants
 
         @numba.njit(**{**conf.JIT_FLAGS, &#39;fastmath&#39;: self.formulae.fastmath})
         def explicit_euler_body(y, dt, dy_dt):
@@ -162,6 +181,15 @@ class PhysicsMethods(BackendMethods):
                     values[i] = k3 * radius[i] ** (1 / 2)
         self.terminal_velocity_body = terminal_velocity_body
 
+        @numba.njit(**{**conf.JIT_FLAGS, &#39;fastmath&#39;: self.formulae.fastmath})
+        def a_w_ice_body(T_in, p_in, RH_in, qv_in, a_w_ice_out):
+            for i in prange(T_in.shape[0]):  # pylint: disable=not-an-iterable
+                pvi = pvi_C(T_in[i] - const.T0)
+                pv = phys_pv(p_in[i], qv_in[i])
+                pvs = pv / RH_in[i]
+                a_w_ice_out[i] = pvi / pvs
+        self.a_w_ice_body = a_w_ice_body
+
     def temperature_pressure_RH(self, rhod, thd, qv, T, p, RH):
         self.temperature_pressure_RH_body(rhod.data, thd.data, qv.data, T.data, p.data, RH.data)
 
@@ -174,7 +202,10 @@ class PhysicsMethods(BackendMethods):
     def critical_volume(self, v_cr, kappa, f_org, v_dry, v_wet, T, cell):
         self.critical_volume_body(
             v_cr.data, kappa.data, f_org.data, v_dry.data, v_wet.data, T.data, cell.data
-        )</code></pre>
+        )
+
+    def a_w_ice(self, T, p, RH, qv, a_w_ice):
+        self.a_w_ice_body(T.data, p.data, RH.data, qv.data, a_w_ice.data)</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -186,6 +217,19 @@ class PhysicsMethods(BackendMethods):
 </ul>
 <h3>Methods</h3>
 <dl>
+<dt id="PySDM.backends.impl_numba.methods.physics_methods.PhysicsMethods.a_w_ice"><code class="name flex">
+<span>def <span class="ident">a_w_ice</span></span>(<span>self, T, p, RH, qv, a_w_ice)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def a_w_ice(self, T, p, RH, qv, a_w_ice):
+    self.a_w_ice_body(T.data, p.data, RH.data, qv.data, a_w_ice.data)</code></pre>
+</details>
+</dd>
 <dt id="PySDM.backends.impl_numba.methods.physics_methods.PhysicsMethods.critical_volume"><code class="name flex">
 <span>def <span class="ident">critical_volume</span></span>(<span>self, v_cr, kappa, f_org, v_dry, v_wet, T, cell)</span>
 </code></dt>
@@ -261,6 +305,7 @@ class PhysicsMethods(BackendMethods):
 <li>
 <h4><code><a title="PySDM.backends.impl_numba.methods.physics_methods.PhysicsMethods" href="#PySDM.backends.impl_numba.methods.physics_methods.PhysicsMethods">PhysicsMethods</a></code></h4>
 <ul class="">
+<li><code><a title="PySDM.backends.impl_numba.methods.physics_methods.PhysicsMethods.a_w_ice" href="#PySDM.backends.impl_numba.methods.physics_methods.PhysicsMethods.a_w_ice">a_w_ice</a></code></li>
 <li><code><a title="PySDM.backends.impl_numba.methods.physics_methods.PhysicsMethods.critical_volume" href="#PySDM.backends.impl_numba.methods.physics_methods.PhysicsMethods.critical_volume">critical_volume</a></code></li>
 <li><code><a title="PySDM.backends.impl_numba.methods.physics_methods.PhysicsMethods.explicit_euler" href="#PySDM.backends.impl_numba.methods.physics_methods.PhysicsMethods.explicit_euler">explicit_euler</a></code></li>
 <li><code><a title="PySDM.backends.impl_numba.methods.physics_methods.PhysicsMethods.temperature_pressure_RH" href="#PySDM.backends.impl_numba.methods.physics_methods.PhysicsMethods.temperature_pressure_RH">temperature_pressure_RH</a></code></li>

@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
 <title>PySDM.backends.impl_numba.storage API documentation</title>
-<meta name="description" content="" />
+<meta name="description" content="CPU Numpy-based implementation of Storage class" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -22,15 +22,20 @@
 <h1 class="title">Module <code>PySDM.backends.impl_numba.storage</code></h1>
 </header>
 <section id="section-intro">
+<p>CPU Numpy-based implementation of Storage class</p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">import numpy as np
+<pre><code class="python">&#34;&#34;&#34;
+CPU Numpy-based implementation of Storage class
+&#34;&#34;&#34;
+import numpy as np
 from PySDM.backends.impl_numba import storage_impl as impl
 from PySDM.backends.impl_common.storage_utils import (
     get_data_from_ndarray, StorageSignature, StorageBase, empty
 )
+
 
 class Storage(StorageBase):
 
@@ -416,15 +421,15 @@ and C <code>double</code>.</p>
 <p>:Character code: <code>'d'</code>
 :Canonical name: <code>numpy.double</code>
 :Alias: <code>numpy.float_</code>
-:Alias on this platform: <code>numpy.float64</code>: 64-bit precision floating-point number type: sign bit, 11 bits exponent, 52 bits mantissa.</p></div>
+:Alias on this platform (Linux x86_64): <code>numpy.float64</code>: 64-bit precision floating-point number type: sign bit, 11 bits exponent, 52 bits mantissa.</p></div>
 </dd>
 <dt id="PySDM.backends.impl_numba.storage.Storage.INT"><code class="name">var <span class="ident">INT</span></code></dt>
 <dd>
 <div class="desc"><p>Signed integer type, compatible with Python <code>int</code> and C <code>long</code>.</p>
 <p>:Character code: <code>'l'</code>
 :Canonical name: <code>numpy.int_</code>
-:Alias on this platform: <code>numpy.int64</code>: 64-bit signed integer (<code>-9_223_372_036_854_775_808</code> to <code>9_223_372_036_854_775_807</code>).
-:Alias on this platform: <code>numpy.intp</code>: Signed integer large enough to fit pointer, compatible with C <code>intptr_t</code>.</p></div>
+:Alias on this platform (Linux x86_64): <code>numpy.int64</code>: 64-bit signed integer (<code>-9_223_372_036_854_775_808</code> to <code>9_223_372_036_854_775_807</code>).
+:Alias on this platform (Linux x86_64): <code>numpy.intp</code>: Signed integer large enough to fit pointer, compatible with C <code>intptr_t</code>.</p></div>
 </dd>
 </dl>
 <h3>Static methods</h3>
