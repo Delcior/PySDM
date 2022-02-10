@@ -23,10 +23,10 @@ jobs:
           ssh_host: ${{ secrets.SSH_HOST }}
           ssh_port: ${{ secrets.SSH_PORT }}
         run: |
-          key_file=$(mktemp)
-          echo "$ssh_key"  | tr -d '\r' > ./key
-          ssh -i ./key $ssh_host -p $ssh_port "bash -s" < ./scripts/commands.sh
-          rm ./key
+          apt-get update -y && apt-get install openssh-client -y
+          eval $(ssh-agent -s)
+          echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+          ssh $ssh_host -p $ssh_port "bash -s" < ./scripts/commands.sh
          
   gpu_tests:
     needs: server_check
