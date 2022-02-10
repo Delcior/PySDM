@@ -24,9 +24,9 @@ jobs:
           ssh_port: ${{ secrets.SSH_PORT }}
         run: |
           key_file=$(mktemp)
-          echo "$ssh_key"  | tr -d '\r' > ~/.ssh/key
-          ssh -i ~/.ssh/key $ssh_host -p $ssh_port "bash -s" < ./scripts/commands.sh
-          rm ~/.ssh/key
+          echo "$ssh_key"  | tr -d '\r' > ./key
+          ssh -i ./key $ssh_host -p $ssh_port "bash -s" < ./scripts/commands.sh
+          rm ./key
          
   gpu_tests:
     needs: server_check
