@@ -24,7 +24,7 @@ jobs:
         run: |
           pwd
           ls -l
-          ssh -i $ssh_key $ssh_host -p $ssh_port "bash -s" < ./scripts/commands.sh
+          ssh -i $ssh_key $ssh_host -p $ssh_port "bash -s" < ../.github/workflows/scripts/commands.sh
          
   gpu_tests:
     needs: server_check
