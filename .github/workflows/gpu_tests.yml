@@ -24,10 +24,10 @@ jobs:
           ssh_port: ${{ secrets.SSH_PORT }}
         run: |
           pwd
-          ls -la /home
-          ls -la /home/runner
-          ls -la /home/runner/work
           ls -la
+          ls -la ./github
+          ls -la ./github/workflows
+          ls -la ./github/workflows/scripts/
           ssh -i $ssh_key $ssh_host -p $ssh_port "bash -s" < /.github/workflows/scripts/commands.sh
          
   gpu_tests:
