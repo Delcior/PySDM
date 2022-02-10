@@ -22,7 +22,7 @@ jobs:
           ssh_host: ${{ secrets.SSH_HOST }}
           ssh_port: ${{ secrets.SSH_PORT }}
         run: |
-          ssh -i $ssh_key $ssh_host -p $ssh_port "bash -s" < /home/delcior/commands.sh
+          ssh -i $ssh_key $ssh_host -p $ssh_port "bash -s" < ./scripts/commands.sh
          
   gpu_tests:
     needs: server_check
