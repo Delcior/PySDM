@@ -16,9 +16,9 @@ jobs:
   server_check:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2
       - name: Ensure runner is up
         env:
-          working-directory: ./scripts
           ssh_key: ${{ secrets.SSH_KEY }}
           ssh_host: ${{ secrets.SSH_HOST }}
           ssh_port: ${{ secrets.SSH_PORT }}
@@ -28,7 +28,7 @@ jobs:
           ls -la /home/runner
           ls -la /home/runner/work
           ls -la
-          ssh -i $ssh_key $ssh_host -p $ssh_port "bash -s" < ./commands.sh
+          ssh -i $ssh_key $ssh_host -p $ssh_port "bash -s" < ../.github/workflows/scripts/commands.sh
          
   gpu_tests:
     needs: server_check
