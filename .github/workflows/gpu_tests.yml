@@ -15,14 +15,14 @@ on:
 jobs:
   server_check:
     runs-on: ubuntu-latest
-  steps:
-    - name: Ensure runner is up
-      env:
-        ssh_key: ${{ secrets.SSH_KEY }}
-        ssh_host: ${{ secrets.SSH_HOST }}
-        ssh_port: ${{ secrets.SSH_PORT }}
-      run: |
-        ssh -i $ssh_key $ssh_host -p $ssh_port "bash -s" < /home/delcior/commands.sh
+    steps:
+      - name: Ensure runner is up
+        env:
+          ssh_key: ${{ secrets.SSH_KEY }}
+          ssh_host: ${{ secrets.SSH_HOST }}
+          ssh_port: ${{ secrets.SSH_PORT }}
+        run: |
+          ssh -i $ssh_key $ssh_host -p $ssh_port "bash -s" < /home/delcior/commands.sh
          
   gpu_tests:
     needs: server_check
