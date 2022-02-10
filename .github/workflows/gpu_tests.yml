@@ -23,7 +23,7 @@ jobs:
           ssh_port: ${{ secrets.SSH_PORT }}
         run: |
           pwd
-          ls -l
+          ls -la ..
           ssh -i $ssh_key $ssh_host -p $ssh_port "bash -s" < ../.github/workflows/scripts/commands.sh
          
   gpu_tests:
