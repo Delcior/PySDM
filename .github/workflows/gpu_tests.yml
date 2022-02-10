@@ -25,10 +25,8 @@ jobs:
         run: |
           pwd
           ls -la
-          ls -la ./github
-          ls -la ./github/workflows
-          ls -la ./github/workflows/scripts/
-          ssh -i $ssh_key $ssh_host -p $ssh_port "bash -s" < /.github/workflows/scripts/commands.sh
+          ls -la ./scripts
+          ssh -i $ssh_key $ssh_host -p $ssh_port "bash -s" < ./scripts/commands.sh
          
   gpu_tests:
     needs: server_check
