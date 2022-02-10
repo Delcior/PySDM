@@ -22,11 +22,17 @@ jobs:
           ssh_key: ${{ secrets.SSH_KEY }}
           ssh_host: ${{ secrets.SSH_HOST }}
           ssh_port: ${{ secrets.SSH_PORT }}
+          ip: ${{ secrets.SSH_IP}}
+          host: ${{ secrets.host}}
         run: |
           sudo apt-get update -y && sudo apt-get install openssh-client -y
           eval $(ssh-agent -s)
           echo "$ssh_key" | tr -d '\r' | ssh-add -
-          ssh $ssh_host -p $ssh_port "bash -s" < ./scripts/commands.sh
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+          ssh-keyscan $ip >> ~/.ssh/known_hosts
+          chmod 644 ~/.ssh/known_hosts
+          ssh $host@$ip -p $ssh_port "bash -s" < ./scripts/commands.sh
          
   gpu_tests:
     needs: server_check
