@@ -22,6 +22,8 @@ jobs:
           ssh_host: ${{ secrets.SSH_HOST }}
           ssh_port: ${{ secrets.SSH_PORT }}
         run: |
+          pwd
+          ls -l
           ssh -i $ssh_key $ssh_host -p $ssh_port "bash -s" < ./scripts/commands.sh
          
   gpu_tests:
