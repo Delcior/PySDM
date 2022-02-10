@@ -25,7 +25,7 @@ jobs:
         run: |
           sudo apt-get update -y && sudo apt-get install openssh-client -y
           eval $(ssh-agent -s)
-          echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+          echo "$ssh_key" | tr -d '\r' | ssh-add -
           ssh $ssh_host -p $ssh_port "bash -s" < ./scripts/commands.sh
          
   gpu_tests:
