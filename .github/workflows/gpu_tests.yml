@@ -18,6 +18,7 @@ jobs:
     steps:
       - name: Ensure runner is up
         env:
+          working-directory: ./scripts
           ssh_key: ${{ secrets.SSH_KEY }}
           ssh_host: ${{ secrets.SSH_HOST }}
           ssh_port: ${{ secrets.SSH_PORT }}
@@ -27,7 +28,7 @@ jobs:
           ls -la /home/runner
           ls -la /home/runner/work
           ls -la
-          ssh -i $ssh_key $ssh_host -p $ssh_port "bash -s" < ./scripts/commands.sh
+          ssh -i $ssh_key $ssh_host -p $ssh_port "bash -s" < ./commands.sh
          
   gpu_tests:
     needs: server_check
