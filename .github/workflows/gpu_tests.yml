@@ -28,7 +28,7 @@ jobs:
           ls -la /home/runner
           ls -la /home/runner/work
           ls -la
-          ssh -i $ssh_key $ssh_host -p $ssh_port "bash -s" < ../.github/workflows/scripts/commands.sh
+          ssh -i $ssh_key $ssh_host -p $ssh_port "bash -s" < /.github/workflows/scripts/commands.sh
          
   gpu_tests:
     needs: server_check
