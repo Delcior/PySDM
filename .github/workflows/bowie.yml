@@ -1,0 +1,10 @@
+name: bowie
+
+on:
+  workflow_dispatch:
+
+jobs:
+  hello:
+    runs-on: bowie
+    steps:
+      - run: echo 'Hello from bowie'
