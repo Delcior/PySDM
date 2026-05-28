@@ -1,0 +1,45 @@
+name: bowie
+
+on:
+  workflow_dispatch:
+  pull_request_target:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+
+jobs:
+  authorize:
+    runs-on: ubuntu-latest
+    outputs:
+      allowed: ${{ steps.authorization.outputs.allowed }}
+    steps:
+      - name: Checkout trusted workflow code
+        uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+
+      - name: Authorize user
+        id: authorization
+        uses: ./.github/actions/authorize
+        with:
+          user: ${{ github.event.pull_request.user.login || github.triggering_actor }}
+          allowed-roles: '["triage", "write", "maintain", "admin"]'
+
+  gpu-tests:
+    needs: authorize
+    if: needs.authorize.outputs.allowed == 'true'
+    runs-on: bowie
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+        with:
+          repository: ${{ github.event.pull_request.head.repo.full_name || github.repository }}
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+
+      - name: Run GPU Tests
+        uses: ./.github/actions/run-slurm-job
+        with:
+          python-version: 3.13.13 # DO NOT CHANGE
+          command: "env -u CI NUMBA_THREADING_LAYER=workqueue python -m pytest --durations=10 -v -s -p no:unraisableexception --timeout=900 --timeout_method=thread tests/unit_tests -k 'GPU or ThrustRTC'"
