@@ -4,7 +4,18 @@ on:
   workflow_dispatch:
 
 jobs:
-  hello:
+  gpu-tests:
     runs-on: bowie
+    strategy:
+      matrix:
+        python-version: [3.13.13] # DO NOT CHANGE
     steps:
-      - run: echo 'Hello from bowie'
+      - name: Checkout code
+        uses: actions/checkout@v6
+      - name: Run GPU Tests
+        uses: ./.github/actions/run-slurm-job
+        with:
+          python-version: ${{ matrix.python-version }}
+          command: "env -u CI NUMBA_THREADING_LAYER=workqueue python -m pytest --durations=10 -v -s -We -p no:unraisableexception --timeout=900 --timeout_method=thread tests/unit_tests -k 'GPU or ThrustRTC'"
+          working-directory: ${{ github.workspace }}
+
