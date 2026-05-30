@@ -22,7 +22,7 @@ unset CI
 
 python -c 'import os; print("CI during install:", os.environ.get("CI"))'
 env -u CI python -m pip install -e '.[unit-tests]'
-mpiexec --mca btl_tcp_if_include eth0 -n 2 $2
+$2
 exit_code=$?
 echo "Tests completed with exit code $exit_code"
 echo $exit_code > /mnt/cluster-workspace/gha-runner/runners/pysdm-derlk/test_exit_code.txt
