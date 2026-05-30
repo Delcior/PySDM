@@ -16,7 +16,7 @@ runs:
       working-directory: ${{ inputs.working-directory }}
       shell: bash
       run: |
-        JOB_ID=$(sbatch --parsable -w major-tom,ground-control ./.github/scripts/run-bowie-tests.sh ${{ inputs.python-version }} "${{ inputs.command }}")
+        JOB_ID=$(sbatch --parsable -w major-tom ./.github/scripts/run-bowie-tests.sh ${{ inputs.python-version }} "${{ inputs.command }}")
         echo "SLURM_JOB_ID=$JOB_ID" >> "$GITHUB_ENV"
         echo "Submitted Slurm job $JOB_ID"
 
