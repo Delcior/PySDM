@@ -10,6 +10,7 @@
 
 #SBATCH --output=/mnt/cluster-workspace/gha-runner/pysdm-derlk/logs/stdout.txt
 #SBATCH --error=/mnt/cluster-workspace/gha-runner/pysdm-derlk/logs/joberr.txt
+#SBATCH --gres=gpu:1
 
 source $HOME/.setup-pyenv
 pyenv shell $1
