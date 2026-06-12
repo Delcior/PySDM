@@ -23,6 +23,7 @@ unset CI
 
 python -c 'import os; print("CI during install:", os.environ.get("CI"))'
 env -u CI python -m pip install -e '.[unit-tests]'
+ls -la ./.venv/lib/python3.13/site-packages/ThrustRTC
 $2
 exit_code=$?
 echo "Tests completed with exit code $exit_code"
