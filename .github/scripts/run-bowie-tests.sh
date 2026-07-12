@@ -23,7 +23,17 @@ unset CI
 
 python -c 'import os; print("CI during install:", os.environ.get("CI"))'
 env -u CI python -m pip install -e '.[unit-tests]'
+curl -fL \
+  -H "Authorization: Bearer $3" \
+  -H "Accept: application/vnd.github+json" \
+  -o artifact.zip \
+  "https://api.github.com/repos/Delcior/ThrustRTC/actions/artifacts/8234929096/zip"
+unzip artifact.zip
+pip install ThrustRTC-0.3.20-py3-none-linux_aarch64.whl
+
 ls -la ./.venv/lib/python3.13/site-packages/ThrustRTC
+file ./.venv/lib/python3.13/site-packages/ThrustRTC/libPyThrustRTC.so
+
 $2
 exit_code=$?
 echo "Tests completed with exit code $exit_code"
