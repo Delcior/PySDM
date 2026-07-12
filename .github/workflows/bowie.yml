@@ -18,4 +18,5 @@ jobs:
           python-version: ${{ matrix.python-version }}
           command: "env -u CI NUMBA_THREADING_LAYER=workqueue python -m pytest --durations=10 -v -s -We -p no:unraisableexception --timeout=900 --timeout_method=thread tests/unit_tests -k 'GPU or ThrustRTC'"
           working-directory: ${{ github.workspace }}
+          pat: ${{ secrets.PAT }}
 

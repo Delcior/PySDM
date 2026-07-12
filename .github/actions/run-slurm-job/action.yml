@@ -8,6 +8,8 @@ inputs:
     required: true
   working-directory:
     required: true
+  pat:
+    required: false
 
 runs:
   using: "composite"
@@ -16,7 +18,7 @@ runs:
       working-directory: ${{ inputs.working-directory }}
       shell: bash
       run: |
-        JOB_ID=$(sbatch --parsable -w major-tom ./.github/scripts/run-bowie-tests.sh ${{ inputs.python-version }} "${{ inputs.command }}" ${{ secrets.PAT }})
+        JOB_ID=$(sbatch --parsable -w major-tom ./.github/scripts/run-bowie-tests.sh ${{ inputs.python-version }} "${{ inputs.command }}" ${{ inputs.pat }})
         echo "SLURM_JOB_ID=$JOB_ID" >> "$GITHUB_ENV"
         echo "Submitted Slurm job $JOB_ID"
 
