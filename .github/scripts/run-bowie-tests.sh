@@ -20,7 +20,7 @@ source ./.venv/bin/activate
 export PATH=/mnt/cluster-workspace/bin/openmpi-5.0.10/bin:$PATH
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/mnt/cluster-workspace/bin/openmpi-5.0.10/lib
 unset CI
-
+apt-get update && apt-get install -y unzip curl
 python -c 'import os; print("CI during install:", os.environ.get("CI"))'
 env -u CI python -m pip install -e '.[unit-tests]'
 curl -fL \
