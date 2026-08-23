@@ -60,6 +60,7 @@ The [`ThrustRTC`](https://open-atmos.github.io/PySDM/PySDM/backends/thrust_rtc.h
   parallelisation model. 
 Using the ``GPU`` backend requires nVidia hardware and [CUDA driver](https://developer.nvidia.com/cuda-downloads).
 
+zzz 
 For an overview of PySDM features (and the preferred way to cite PySDM in papers), please refer to our JOSS papers:
 - [Bartman et al. 2022](https://doi.org/10.21105/joss.03219) (PySDM v1).
 - [de Jong, Singer et al. 2023](https://doi.org/10.21105/joss.04968) (PySDM v2).
