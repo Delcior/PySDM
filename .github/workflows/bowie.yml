@@ -1,7 +1,13 @@
-name: bowie
+name: GPU Tests
 
 on:
   workflow_dispatch:
+    inputs:
+      tests_to_run:
+        description: 'Location of tests to run (e.g., tests/unit_tests)'
+        required: false
+        type: string
+        default: 'tests/unit_tests'
   pull_request_target:
     types: [opened, synchronize, reopened]
 
@@ -42,4 +48,4 @@ jobs:
         uses: ./.github/actions/run-slurm-job
         with:
           python-version: 3.13.13 # DO NOT CHANGE
-          command: "env -u CI NUMBA_THREADING_LAYER=workqueue python -m pytest --durations=10 -v -s -p no:unraisableexception --timeout=900 --timeout_method=thread tests/unit_tests -k 'GPU or ThrustRTC'"
+          command: "NUMBA_THREADING_LAYER=workqueue python -m pytest --durations=10 -v -s -p no:unraisableexception --timeout=900 --timeout_method=thread ${{ inputs.tests_to_run || 'tests/unit_tests' }} -k 'GPU or ThrustRTC'"
