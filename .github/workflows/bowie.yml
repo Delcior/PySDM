@@ -9,7 +9,7 @@ on:
         type: string
         default: 'tests/unit_tests'
   pull_request_target:
-    types: [opened, synchronize, reopened]
+    types: [opened, synchronize, reopened, labeled]
     paths:
       - "PySDM/**"
       - "tests/**"
@@ -23,6 +23,9 @@ permissions:
 jobs:
   authorize:
     runs-on: ubuntu-latest
+    if: >-
+      github.event.pull_request == null ||
+      contains(github.event.pull_request.labels.*.name, 'GPU')
     outputs:
       allowed: ${{ steps.authorization.outputs.allowed }}
     steps:
