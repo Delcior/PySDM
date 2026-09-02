@@ -22,6 +22,7 @@ uv pip install \
   --find-links "/mnt/cluster-workspace/shared/python/wheels" \
   --index-strategy first-index \
   -e '.[unit-tests]' 2>&1
+uv pip install pytest-xdist 2>&1
 
 # COMMAND to execute
 bash -c "$2"
